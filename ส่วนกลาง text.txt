@@ -1,0 +1,7 @@
+ส่วนกลาง
+1 PA มีโครง html ที่ใช้อยู่แล้วเดี๋ยวส่งให้
+2 งบประมาณ เป็นตาราง
+3 AR-QADS เป็น timeline + universal pic text
+4 QSSHE universal pic text
+5 ธรรมาภิบาล universal pic text
+6 กิจกรรมคุณธรรมเป้าหมาย pic table 

@@ -1,0 +1,1879 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1920" />
+  <title>Monthly Report — ฝ่ายสิ่งแวดล้อมโครงการ (Single File)</title>
+
+  <!-- Fonts: Sora (display Eng) + Bai Jamjuree (Thai มีหัว, modern friendly) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&family=Sora:wght@500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+/* ───────────────────────────────────────────────────────────
+   Monthly Report Dashboard — ฝ่ายสิ่งแวดล้อมโครงการ
+   Pastel Direction · v1.0 — bundled single-file build
+─────────────────────────────────────────────────────────── */
+
+:root {
+  --bg: #f5efe5;
+  --paper: #ffffff;
+  --paper-2: #faf6ed;
+  --ink: #15192a;
+  --ink-2: #2a2f44;
+  --ink-soft: #6c7282;
+  --line: #ece5d5;
+  --line-soft: #f1ece0;
+  --c-sage:     #d6e4cd;
+  --c-sage-d:   #88a376;
+  --c-peach:    #f7d4bc;
+  --c-peach-d:  #b5703f;
+  --c-butter:   #fbe5a4;
+  --c-butter-d: #997621;
+  --c-pink:     #f4c8d4;
+  --c-pink-d:   #a64664;
+  --c-lavender: #ddd6ee;
+  --c-lavender-d: #6b5fa3;
+  --c-mint:     #c8e4d8;
+  --c-mint-d:   #3b8a6a;
+  --c-sky:      #cadce9;
+  --c-sky-d:   #3e6b8a;
+  --c-cream:    #f3ecdb;
+  --c-cream-d:  #8a774a;
+  --c-coral:    #f9c4ba;
+  --c-coral-d:  #b85643;
+  --ok: #2d7045;
+  --ok-soft: #d4e5d8;
+  --warn: #b53737;
+  --warn-soft: #f1d3d3;
+  --ff-display: "Sora", "Bai Jamjuree", system-ui, sans-serif;
+  --ff-body: "Bai Jamjuree", "Sora", system-ui, sans-serif;
+  --r-sm: 12px;
+  --r:    20px;
+  --r-lg: 28px;
+  --r-xl: 36px;
+  --canvas-w: 1920px;
+  --gap: 20px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--ff-body);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 17px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "kern" on;
+}
+[contenteditable="true"], h1, h2, h3, h4, .kpi-title, .kp-name, .kp-type,
+.kpi-sub, .tl-row-name, .tl-row-meta, .tl-block-title, .tl-block-period,
+.section-head .title, .ch-title, .ch-sub {
+  padding-top: 0.05em;
+}
+button { font: inherit; cursor: pointer; background: none; border: 0; color: inherit; }
+input, textarea { font: inherit; color: inherit; }
+
+.app { min-height: 100vh; padding: 28px; display: flex; justify-content: center; }
+.stage { width: 100%; max-width: var(--canvas-w); background: var(--paper); border-radius: var(--r-xl); box-shadow: 0 1px 0 rgba(20,25,42,0.03), 0 24px 60px rgba(20,25,42,0.06); overflow: hidden; }
+
+.topbar { display: flex; align-items: center; gap: 18px; padding: 28px 40px 24px; }
+.brand { display: flex; align-items: center; gap: 14px; }
+.brand-logo { width: 56px; height: 56px; border-radius: 18px; background: var(--ink); color: var(--paper); display: grid; place-items: center; font-family: var(--ff-display); font-weight: 800; font-size: 18px; letter-spacing: -0.01em; flex-shrink: 0; }
+.brand-meta { line-height: 1.2; min-width: 0; }
+.brand-meta .b1 { font-family: var(--ff-display); font-weight: 700; font-size: 19px; letter-spacing: -0.01em; }
+.brand-meta .b2 { font-size: 13px; color: var(--ink-soft); margin-top: 3px; letter-spacing: 0.01em; }
+.topbar-spacer { flex: 1; }
+.status-legend { display: inline-flex; align-items: center; gap: 14px; padding: 8px 14px; background: var(--bg); border-radius: 999px; white-space: nowrap; }
+.sl-item { display: inline-flex; align-items: center; gap: 7px; font-family: var(--ff-body); font-size: 12.5px; font-weight: 600; color: var(--ink-2); line-height: 1.4; }
+.sl-item .sl-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.sl-item.ok .sl-dot { background: var(--ok); }
+.sl-item.warn .sl-dot { background: var(--warn); }
+.actions { display: flex; gap: 8px; align-items: center; }
+.btn, .h-btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 999px; font-weight: 600; font-size: 14px; font-family: var(--ff-body); background: var(--bg); color: var(--ink); transition: all 0.12s ease; white-space: nowrap; border: 0; }
+.btn:hover, .h-btn:hover { background: #ece5d5; }
+.btn.primary, .h-btn.primary, .h-btn.gold { background: var(--ink); color: var(--paper); }
+.btn.primary:hover, .h-btn.primary:hover, .h-btn.gold:hover { background: var(--ink-2); }
+.btn .arr { width: 22px; height: 22px; background: var(--paper); color: var(--ink); border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; }
+.h-btn .ico, .btn .ico { display: inline-flex; align-items: center; justify-content: center; font-family: var(--ff-display); font-weight: 700; font-size: 15px; width: 16px; }
+.avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--c-peach), var(--c-coral)); display: grid; place-items: center; font-family: var(--ff-display); font-weight: 700; font-size: 16px; color: var(--ink); border: 2px solid var(--paper); box-shadow: 0 2px 8px rgba(20,25,42,0.1); flex-shrink: 0; }
+
+.main-tabs { display: flex; gap: 6px; margin: 0 40px 18px; padding: 6px; background: var(--bg); border-radius: 999px; width: fit-content; flex-wrap: wrap; }
+.main-tab { display: inline-flex; flex-direction: column; align-items: flex-start; padding: 11px 22px; border-radius: 999px; font-family: var(--ff-display); font-weight: 700; font-size: 16px; color: var(--ink-soft); transition: all 0.12s ease; line-height: 1.35; border: 0; cursor: pointer; background: transparent; }
+.main-tab:hover { color: var(--ink); }
+.main-tab.active { background: var(--ink); color: var(--paper); }
+.main-tab .mt-short { font-family: var(--ff-display); font-weight: 700; font-size: 16px; display: block; line-height: 1; white-space: nowrap; }
+.main-tab .mt-full { font-family: var(--ff-body); font-weight: 500; font-size: 11.5px; margin-top: 4px; opacity: 0.7; letter-spacing: 0.01em; display: block; white-space: nowrap; }
+.main-tab.active .mt-full { opacity: 0.85; }
+
+.sub-tabs-wrap { display: flex; gap: 6px; align-items: center; padding: 0 40px 22px; flex-wrap: wrap; background: transparent; border-bottom: 0; }
+.sub-tab { display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px 9px 16px; border-radius: 999px; font-weight: 600; font-size: 14px; color: var(--ink-soft); border: 0; background: transparent; cursor: pointer; transition: all 0.12s ease; user-select: none; position: relative; }
+.sub-tab:hover { background: var(--bg); color: var(--ink); }
+.sub-tab.active { background: var(--c-butter); color: var(--ink); }
+.sub-tab.dragging { opacity: 0.4; }
+.sub-tab.drag-over { box-shadow: -3px 0 0 var(--c-butter-d); }
+.sub-tab .drag-handle { font-size: 11px; opacity: 0.4; cursor: grab; margin-right: -3px; }
+.sub-tab .st-name { outline: none; }
+.sub-tab .st-name[contenteditable="true"]:focus { background: var(--paper); color: var(--ink); padding: 2px 6px; border-radius: 6px; }
+.sub-tab .st-close { background: transparent; color: currentColor; font-size: 15px; opacity: 0.55; padding: 0 0 0 4px; line-height: 1; }
+.sub-tab .st-close:hover { opacity: 1; }
+.add-sub { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: transparent; border: 1.5px dashed var(--ink-soft); color: var(--ink-soft); font-weight: 600; font-size: 13px; border-radius: 999px; cursor: pointer; }
+.add-sub:hover { border-color: var(--ink); color: var(--ink); }
+
+.toolbar { display: flex; align-items: center; gap: 6px; padding: 8px 14px; margin: 0 40px 24px; background: var(--bg); border-radius: 999px; border: 0; width: fit-content; max-width: calc(100% - 80px); flex-wrap: wrap; }
+.toolbar-label { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-soft); font-weight: 700; margin: 0 10px 0 8px; }
+.tb-btn { display: inline-flex; align-items: center; gap: 7px; padding: 7px 13px; background: var(--paper); color: var(--ink); font-weight: 600; font-size: 13.5px; border-radius: 999px; transition: all 0.12s ease; border: 0; cursor: pointer; }
+.tb-btn:hover { background: var(--ink); color: var(--paper); }
+.tb-btn .ico { display: inline-flex; align-items: center; justify-content: center; font-family: var(--ff-display); font-weight: 700; font-size: 14px; width: 14px; }
+.toolbar-spacer { flex: 1; min-width: 16px; }
+.toolbar-toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink); font-weight: 600; padding: 0 12px 0 8px; cursor: pointer; }
+.toolbar-toggle input { accent-color: var(--ink); width: 16px; height: 16px; }
+
+.canvas { padding: 0 40px 60px; background: transparent; min-height: 600px; }
+.canvas-period { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 28px; padding: 18px 28px; background: var(--c-cream); border-radius: var(--r); }
+.canvas-period .left { font-family: var(--ff-display); font-weight: 700; font-size: 22px; letter-spacing: -0.01em; }
+.canvas-period .left small { display: block; font-family: var(--ff-body); font-weight: 600; font-size: 12px; color: var(--ink-soft); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+.canvas-period .right { font-size: 13px; color: var(--ink-soft); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; }
+
+.grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--gap); }
+.grid-item { position: relative; }
+.grid-item.dragging { opacity: 0.35; }
+.grid-item.drag-over::before { content: ""; position: absolute; inset: -8px; border: 2px dashed var(--c-butter-d); border-radius: var(--r-lg); pointer-events: none; }
+.grid-item.hidden-obj { opacity: 0.45; }
+.grid-item.hidden-obj .obj-inner { filter: grayscale(0.5); }
+.obj-inner { position: relative; height: 100%; }
+.edit .grid-item:hover .obj-handle { opacity: 1; pointer-events: auto; }
+.obj-handle { position: absolute; top: -10px; right: -8px; display: flex; gap: 4px; z-index: 5; opacity: 0; transition: opacity 0.12s ease; pointer-events: none; }
+.obj-handle button { width: 28px; height: 28px; border-radius: 8px; background: var(--ink); color: var(--paper); border: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; box-shadow: 0 2px 6px rgba(20,25,42,0.15); cursor: pointer; }
+.obj-handle button:hover { background: var(--c-coral-d); }
+.obj-handle button[data-action="grab"] { cursor: grab; }
+
+.section-head { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 16px; margin: 24px 0 4px; }
+.section-head:first-child { margin-top: 0; }
+.section-head .num { display: inline-flex; align-items: center; justify-content: center; padding: 5px 12px; background: var(--c-butter); border-radius: 999px; font-family: var(--ff-display); font-weight: 700; font-size: 14px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.section-head .title { font-family: var(--ff-display); font-weight: 700; font-size: 36px; letter-spacing: -0.025em; line-height: 1.3; margin: 0; flex: 0 0 auto; }
+.section-head .eyebrow { font-size: 14px; letter-spacing: 0.02em; color: var(--ink-soft); font-weight: 600; margin-left: auto; text-transform: none; }
+
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 22px 24px; display: flex; flex-direction: column; gap: 4px; height: 100%; position: relative; overflow: hidden; isolation: isolate; }
+.card.kpi { border: 0; min-height: 200px; padding: 22px 24px; }
+.card.kpi.compact { min-height: 168px; padding: 18px 20px; }
+.card.c-sage     { background: var(--c-sage); }
+.card.c-peach    { background: var(--c-peach); }
+.card.c-butter   { background: var(--c-butter); }
+.card.c-pink     { background: var(--c-pink); }
+.card.c-lavender { background: var(--c-lavender); }
+.card.c-mint     { background: var(--c-mint); }
+.card.c-sky      { background: var(--c-sky); }
+.card.c-cream    { background: var(--c-cream); }
+.card.c-coral    { background: var(--c-coral); }
+.card.c-ink      { background: var(--ink); color: var(--paper); }
+.card .arr-btn { position: absolute; top: 18px; right: 18px; width: 36px; height: 36px; border-radius: 50%; background: var(--paper); color: var(--ink); display: grid; place-items: center; font-size: 16px; font-weight: 600; box-shadow: 0 1px 0 rgba(20,25,42,0.04); border: 0; cursor: pointer; transition: all 0.12s ease; z-index: 2; }
+.card .arr-btn:hover { background: var(--ink); color: var(--paper); }
+.card.c-ink .arr-btn { background: rgba(255,255,255,0.15); color: var(--paper); }
+.card.c-ink .arr-btn:hover { background: var(--paper); color: var(--ink); }
+.card.compact .arr-btn { width: 32px; height: 32px; font-size: 14px; top: 14px; right: 14px; }
+.kpi-status { position: absolute; top: 24px; left: 24px; width: 10px; height: 10px; border-radius: 50%; display: none; }
+.kpi-title { font-family: var(--ff-display); font-size: 17px; font-weight: 700; color: var(--ink); line-height: 1.35; letter-spacing: -0.005em; padding-right: 50px; }
+.card.c-ink .kpi-title { color: var(--paper); }
+.kpi-sub { font-family: var(--ff-body); font-size: 12.5px; color: var(--ink-2); opacity: 0.7; font-weight: 500; letter-spacing: 0.005em; }
+.card.c-ink .kpi-sub { color: var(--paper); opacity: 0.65; }
+.kpi-value-row { display: flex; align-items: baseline; gap: 6px; margin-top: auto; padding-top: 16px; white-space: nowrap; }
+.kpi-value { font-family: var(--ff-display); font-weight: 800; font-size: 56px; line-height: 0.95; letter-spacing: -0.035em; color: var(--ink); font-variant-numeric: tabular-nums; }
+.card.c-ink .kpi-value { color: var(--paper); }
+.kpi-value.status-green, .kpi-value.status-red { color: var(--ink); }
+.kpi-unit { font-family: var(--ff-display); font-size: 20px; font-weight: 600; color: var(--ink-2); opacity: 0.85; white-space: nowrap; }
+.card.c-ink .kpi-unit { color: var(--paper); opacity: 0.85; }
+.kpi-pct-sign { font-family: var(--ff-display); font-size: 28px; font-weight: 700; color: var(--ink-2); opacity: 0.85; }
+.card.c-ink .kpi-pct-sign { color: var(--paper); opacity: 0.85; }
+.card.compact .kpi-value { font-size: 46px; }
+.card.compact .kpi-pct-sign { font-size: 23px; }
+.card.compact .kpi-unit { font-size: 17px; }
+.kpi-bar { height: 8px; background: rgba(20,25,42,0.1); border-radius: 4px; margin-top: 12px; overflow: hidden; position: relative; }
+.card.c-ink .kpi-bar { background: rgba(255,255,255,0.15); }
+.kpi-bar-fill { height: 100%; background: var(--ink); border-radius: 4px; transition: width 0.6s ease; }
+.kpi-bar-fill.status-green { background: var(--ok); }
+.kpi-bar-fill.status-red   { background: var(--warn); }
+.card.c-ink .kpi-bar-fill { background: var(--paper); }
+.card.c-ink .kpi-bar-fill.status-green { background: var(--c-mint); }
+.card.c-ink .kpi-bar-fill.status-red   { background: var(--c-coral); }
+.kpi-bar-target { display: none; }
+.kpi-foot { display: flex; align-items: center; gap: 10px; margin-top: 12px; padding-top: 12px; border-top: 1.5px solid rgba(20,25,42,0.08); font-size: 12.5px; color: var(--ink-2); }
+.card.c-ink .kpi-foot { border-top-color: rgba(255,255,255,0.15); color: var(--paper); }
+.kpi-target { font-weight: 600; opacity: 0.78; }
+.kpi-target b { font-weight: 800; opacity: 1; }
+.kpi-trend { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; font-family: var(--ff-display); font-weight: 700; font-size: 12px; background: var(--paper); color: var(--ink); font-variant-numeric: tabular-nums; }
+.kpi-trend.up   { color: var(--ok); }
+.kpi-trend.down { color: var(--warn); }
+.kpi-trend.flat { color: var(--ink-soft); }
+.card.c-ink .kpi-trend { background: rgba(255,255,255,0.15); color: var(--paper); }
+.card.c-ink .kpi-trend.up   { color: var(--c-mint); }
+.card.c-ink .kpi-trend.down { color: var(--c-coral); }
+.kpi-dir-toggle { background: rgba(255,255,255,0.5); color: var(--ink-2); font-size: 10.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; letter-spacing: 0.03em; cursor: pointer; transition: all 0.12s ease; border: 0; }
+.kpi-dir-toggle:hover { background: var(--ink); color: var(--paper); }
+.card.c-ink .kpi-dir-toggle { background: rgba(255,255,255,0.15); color: var(--paper); }
+
+.card.kpi-project { padding: 22px 24px 20px; min-height: 188px; gap: 6px; background: var(--paper); }
+.card.kpi-project.status-green { background: var(--c-sage); }
+.card.kpi-project.status-red   { background: var(--c-coral); }
+.card.kpi-project.compact { min-height: 164px; padding: 18px 20px; }
+.kp-type { font-family: var(--ff-body); font-size: 11.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); opacity: 0.72; line-height: 1.2; margin-bottom: 2px; }
+.kp-name { font-family: var(--ff-display); font-size: 19px; font-weight: 700; line-height: 1.38; letter-spacing: -0.008em; color: var(--ink); margin: 0; padding: 2px 4px 2px 0; }
+.card.kpi-project.compact .kp-name { font-size: 17px; }
+.card.kpi-project.clickable { cursor: pointer; }
+.card.kpi-project.clickable:hover { filter: brightness(0.97); }
+.card.kpi-project .kpi-value-row { padding-top: 12px; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+.text-block { background: var(--paper); padding: 26px 30px; border: 1.5px solid var(--line); border-left: 6px solid var(--c-butter-d); border-radius: var(--r); height: 100%; }
+.text-block h3 { font-family: var(--ff-display); font-size: 24px; font-weight: 700; margin: 0 0 12px; letter-spacing: -0.015em; color: var(--ink); }
+.text-block .body { font-size: 17px; line-height: 1.6; color: var(--ink-2); white-space: pre-wrap; text-wrap: pretty; }
+
+.img-slot { background: radial-gradient(circle at 20% 80%, rgba(255,255,255,0.5) 0%, transparent 40%), radial-gradient(circle at 80% 20%, rgba(20,25,42,0.06) 0%, transparent 50%), var(--c-peach); border: 0; border-radius: var(--r); min-height: 300px; display: grid; place-items: center; padding: 24px; position: relative; height: 100%; }
+.img-slot .img-label { font-family: var(--ff-body); font-size: 13px; font-weight: 600; letter-spacing: 0.01em; color: var(--ink); text-align: center; background: var(--paper); padding: 10px 18px; border-radius: 999px; box-shadow: 0 4px 16px rgba(20,25,42,0.08); }
+
+.img-text { display: grid; grid-template-columns: 5fr 7fr; gap: 0; background: var(--paper); border: 0; border-radius: var(--r-xl); min-height: 340px; overflow: hidden; }
+.img-text .img-slot { border: 0; border-radius: 0; min-height: auto; }
+.img-text .it-body { padding: 36px 42px; display: flex; flex-direction: column; justify-content: center; }
+.img-text .it-eyebrow { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: rgba(20,25,42,0.08); border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; width: fit-content; color: var(--ink-2); margin-bottom: 16px; }
+.img-text h3 { font-family: var(--ff-display); font-size: 32px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.3; margin: 0 0 14px; color: var(--ink); }
+.img-text .body { font-size: 17px; line-height: 1.55; color: var(--ink-2); white-space: pre-wrap; text-wrap: pretty; }
+
+.pic-spread { background: var(--paper); border-radius: var(--r-xl); padding: 36px 40px; display: flex; flex-direction: column; gap: 22px; border: 1px solid var(--line); position: relative; }
+.ps-top { display: grid; grid-template-columns: 4fr 8fr; gap: 28px; align-items: stretch; min-height: 340px; }
+.pic-spread.side-right .ps-top { grid-template-columns: 8fr 4fr; }
+.ps-portrait { background: radial-gradient(circle at 30% 70%, rgba(255,255,255,0.5) 0%, transparent 45%), radial-gradient(circle at 70% 25%, rgba(20,25,42,0.06) 0%, transparent 50%), var(--c-sky); border-radius: var(--r-lg); display: grid; place-items: center; min-height: 340px; position: relative; }
+.ps-portrait .img-label { background: var(--paper); padding: 10px 18px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--ink); letter-spacing: 0.01em; }
+.ps-body { display: flex; flex-direction: column; justify-content: center; padding: 8px 0; }
+.ps-heading { font-family: var(--ff-display); font-size: 36px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.25; margin: 0 0 16px; color: var(--ink); }
+.ps-text { font-family: var(--ff-body); font-size: 17px; line-height: 1.6; color: var(--ink-2); white-space: pre-wrap; text-wrap: pretty; }
+.ps-landscape-row { display: grid; gap: 14px; grid-template-columns: repeat(var(--ps-cols, 4), 1fr); }
+.ps-landscape-row[data-count="2"] { --ps-cols: 2; }
+.ps-landscape-row[data-count="3"] { --ps-cols: 3; }
+.ps-landscape-row[data-count="4"] { --ps-cols: 4; }
+.ps-landscape-row[data-count="5"] { --ps-cols: 5; }
+.ps-landscape-row[data-count="6"] { --ps-cols: 6; }
+.ps-landscape { position: relative; background: radial-gradient(circle at 25% 80%, rgba(255,255,255,0.5) 0%, transparent 45%), var(--c-mint); border-radius: var(--r); aspect-ratio: 4 / 3; display: grid; place-items: center; transition: transform 0.12s ease; }
+.ps-landscape:nth-child(2n) { background: var(--c-peach); }
+.ps-landscape:nth-child(3n) { background: var(--c-lavender); }
+.ps-landscape:nth-child(4n) { background: var(--c-butter); }
+.ps-landscape:nth-child(5n) { background: var(--c-pink); }
+.ps-landscape:nth-child(6n) { background: var(--c-cream); }
+.ps-landscape:hover { transform: translateY(-2px); }
+.ps-landscape .img-label { background: var(--paper); padding: 7px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; color: var(--ink); }
+.ps-l-remove { position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border-radius: 50%; background: var(--paper); color: var(--ink); border: 1px solid var(--line); font-size: 13px; font-weight: 700; display: grid; place-items: center; cursor: pointer; opacity: 0; transition: opacity 0.14s ease; }
+.ps-landscape:hover .ps-l-remove { opacity: 1; }
+.ps-l-add { border: 2px dashed rgba(20,25,42,0.2); background: transparent; border-radius: var(--r); font-family: var(--ff-body); font-weight: 700; font-size: 13px; color: var(--ink-soft); cursor: pointer; display: grid; place-items: center; min-height: 120px; transition: all 0.12s ease; }
+.ps-l-add:hover { border-color: var(--ink); color: var(--ink); }
+.ps-controls { display: flex; justify-content: flex-end; margin-top: -8px; }
+.ps-side-toggle { background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; font-family: var(--ff-body); font-weight: 600; font-size: 12.5px; color: var(--ink-2); cursor: pointer; transition: all 0.12s ease; }
+.ps-side-toggle:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+.img-full { display: flex; flex-direction: column; gap: 14px; }
+.img-full-slot { background: radial-gradient(circle at 22% 78%, rgba(255,255,255,0.5) 0%, transparent 50%), radial-gradient(circle at 78% 22%, rgba(20,25,42,0.08) 0%, transparent 55%), var(--c-sage); border-radius: var(--r-xl); min-height: 720px; display: grid; place-items: center; position: relative; overflow: hidden; }
+.img-full-slot .img-label { background: var(--paper); padding: 14px 24px; border-radius: 999px; font-size: 15px; font-weight: 700; color: var(--ink); letter-spacing: 0.01em; }
+.img-full-caption { font-family: var(--ff-body); font-size: 14px; font-weight: 500; color: var(--ink-soft); text-align: center; line-height: 1.5; padding: 0 20px; }
+
+.data-table { background: var(--paper); border-radius: var(--r-lg); padding: 28px 32px 24px; border: 1px solid var(--line); display: flex; flex-direction: column; gap: 16px; }
+.dt-title { font-family: var(--ff-display); font-size: 22px; font-weight: 700; line-height: 1.3; margin: 0; color: var(--ink); letter-spacing: -0.015em; }
+.dt-scroll { overflow-x: auto; }
+.data-table table { width: 100%; border-collapse: collapse; font-family: var(--ff-body); font-size: 14px; }
+.data-table thead th { text-align: left; font-family: var(--ff-display); font-weight: 700; font-size: 12.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); padding: 12px 14px; background: var(--bg); border-bottom: 2px solid var(--ink); vertical-align: bottom; line-height: 1.4; }
+.data-table thead th:first-child { border-top-left-radius: 12px; }
+.data-table thead th:last-child  { border-top-right-radius: 12px; }
+.data-table tbody td { padding: 14px 14px; border-bottom: 1px solid var(--line); color: var(--ink); line-height: 1.5; vertical-align: top; }
+.data-table tbody tr:last-child td { border-bottom: 0; }
+.data-table tbody tr.total-row td { background: var(--c-butter); font-weight: 700; border-top: 2px solid var(--ink); border-bottom: 0; }
+.data-table tbody tr.total-row td:first-child { border-bottom-left-radius: 12px; }
+.data-table tbody tr.total-row td:last-child  { border-bottom-right-radius: 12px; }
+.data-table tbody tr:hover:not(.total-row) td { background: rgba(20,25,42,0.025); }
+.dt-col-label { font-weight: 500; min-width: 240px; }
+.dt-col-num { text-align: right; font-family: var(--ff-display); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.dt-actions-col { width: 36px; padding: 0 !important; background: transparent !important; border-bottom-color: transparent !important; }
+.dt-row-del { width: 24px; height: 24px; border-radius: 50%; background: var(--paper); border: 1px solid var(--line); color: var(--ink-soft); font-size: 12px; font-weight: 700; cursor: pointer; display: grid; place-items: center; opacity: 0; transition: all 0.14s ease; }
+.data-table tbody tr:hover .dt-row-del { opacity: 1; }
+.dt-row-del:hover { background: var(--warn); color: var(--paper); border-color: var(--warn); }
+.dt-add-row { align-self: flex-start; margin-top: 4px; padding: 8px 16px; border-radius: 999px; background: transparent; border: 1.5px dashed rgba(20,25,42,0.25); font-family: var(--ff-body); font-weight: 700; font-size: 13px; color: var(--ink-soft); cursor: pointer; transition: all 0.12s ease; }
+.dt-add-row:hover { background: var(--ink); color: var(--paper); border-style: solid; border-color: var(--ink); }
+
+.timeline { background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--r-lg); padding: 28px 30px; }
+.timeline-title { font-family: var(--ff-display); font-size: 24px; font-weight: 700; margin: 0 0 20px; letter-spacing: -0.015em; }
+.tl-rows { display: flex; flex-direction: column; gap: 14px; }
+.tl-row { display: grid; grid-template-columns: 240px 1fr; gap: 18px; align-items: stretch; background: var(--c-cream); border-radius: var(--r); padding: 16px 18px 16px 20px; position: relative; }
+.tl-row-label { display: flex; flex-direction: column; justify-content: center; gap: 4px; border-right: 1.5px dashed rgba(20,25,42,0.12); padding-right: 16px; }
+.tl-row-label .tl-row-name { font-family: var(--ff-display); font-size: 17px; font-weight: 700; line-height: 1.2; letter-spacing: -0.005em; color: var(--ink); }
+.tl-row-label .tl-row-meta { font-size: 12px; color: var(--ink-soft); letter-spacing: 0.02em; font-weight: 500; }
+.tl-blocks { display: flex; align-items: stretch; gap: 0; flex-wrap: wrap; row-gap: 12px; }
+.tl-block-wrap { display: flex; align-items: center; }
+.tl-connector { width: 18px; height: 2px; background: rgba(20,25,42,0.15); flex-shrink: 0; }
+.tl-block { position: relative; min-width: 210px; max-width: 280px; flex: 0 0 auto; background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 13px 16px 14px 22px; display: flex; flex-direction: column; gap: 6px; transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease; overflow: visible; }
+.tl-block:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(20,25,42,0.06); }
+.tl-block::before { content: ""; position: absolute; top: 12px; bottom: 12px; left: 9px; width: 3px; border-radius: 999px; background: var(--ink-soft); }
+.tl-block.green { border-color: rgba(45,112,69,0.22); background: linear-gradient(180deg, rgba(212,229,216,0.55) 0%, var(--paper) 65%); }
+.tl-block.green::before { background: var(--ok); }
+.tl-block.red { border-color: rgba(181,55,55,0.24); background: linear-gradient(180deg, rgba(241,211,211,0.6) 0%, var(--paper) 65%); }
+.tl-block.red::before { background: var(--warn); }
+.tl-block-title { font-family: var(--ff-display); font-size: 14.5px; font-weight: 700; line-height: 1.35; color: var(--ink); letter-spacing: -0.005em; padding-right: 4px; }
+.tl-block-period { font-family: var(--ff-body); font-size: 11.5px; color: var(--ink-soft); font-weight: 500; letter-spacing: 0.02em; display: inline-flex; align-items: center; gap: 6px; }
+.tl-block-period::before { content: "◇"; font-size: 9px; opacity: 0.55; }
+.tl-block-prog { margin-top: 6px; display: flex; flex-direction: column; gap: 4px; }
+.tl-block-progbar { width: 100%; height: 5px; background: rgba(20,25,42,0.08); border-radius: 999px; overflow: hidden; }
+.tl-block-progbar > div { height: 100%; background: var(--ink); border-radius: 999px; transition: width 0.5s ease; }
+.tl-block.green .tl-block-progbar > div { background: var(--ok); }
+.tl-block.red   .tl-block-progbar > div { background: var(--warn); }
+.tl-block-pct { font-family: var(--ff-display); font-weight: 700; font-size: 11.5px; align-self: flex-end; color: var(--ink-2); font-variant-numeric: tabular-nums; line-height: 1; }
+.tl-block-actions { position: absolute; top: 7px; right: 7px; display: flex; gap: 4px; opacity: 0; transform: translateY(-2px); transition: opacity 0.14s ease, transform 0.14s ease; z-index: 2; }
+.tl-row.editable .tl-block:hover .tl-block-actions, .tl-row.editable .tl-block:focus-within .tl-block-actions { opacity: 1; transform: translateY(0); }
+.tl-block-actions button { width: 24px; height: 24px; border-radius: 50%; background: var(--paper); border: 1px solid var(--line); color: var(--ink-2); font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; box-shadow: 0 2px 6px rgba(20,25,42,0.08); transition: all 0.12s ease; }
+.tl-block-actions button:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); transform: scale(1.08); }
+.tl-add { display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: transparent; border: 1.5px dashed var(--ink-soft); color: var(--ink-soft); font-family: var(--ff-body); font-weight: 600; font-size: 13px; border-radius: var(--r); cursor: pointer; padding: 10px 14px; transition: all 0.12s ease; min-height: 70px; }
+.tl-add:hover { border-color: var(--ink); color: var(--ink); background: rgba(20,25,42,0.03); }
+.tl-add.right { min-width: 90px; align-self: stretch; }
+.tl-add.down { width: 100%; margin-top: 14px; padding: 14px; min-height: 56px; }
+.tl-row-del { position: absolute; top: 8px; right: 8px; width: 24px; height: 24px; border: 0; border-radius: 8px; background: transparent; color: var(--ink-soft); cursor: pointer; font-size: 16px; display: inline-flex; align-items: center; justify-content: center; opacity: 0; transition: all 0.12s ease; }
+.tl-row:hover .tl-row-del { opacity: 1; }
+.tl-row-del:hover { background: var(--warn-soft); color: var(--warn); }
+
+.chart-wrap { background: var(--c-cream); border: 0; border-radius: var(--r-xl); padding: 32px 36px 28px; }
+.chart-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 22px; }
+.chart-head .ch-title { font-family: var(--ff-display); font-size: 24px; font-weight: 700; margin: 0 0 4px; letter-spacing: -0.015em; line-height: 1.2; color: var(--ink); }
+.chart-head .ch-sub { font-size: 14px; color: var(--ink-soft); letter-spacing: 0.005em; }
+.chart-legend { display: flex; gap: 12px; font-size: 13px; font-weight: 600; color: var(--ink-2); align-items: center; flex-wrap: wrap; }
+.chart-legend .lg-pill { display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px 6px 8px; background: var(--paper); border-radius: 999px; }
+.chart-legend .lg-pill .lg-mark { width: 12px; height: 12px; border-radius: 4px; display: inline-block; }
+.chart-legend .lg-pill .lg-mark.dot { border-radius: 50%; }
+.chart-svg-wrap { padding-top: 0; }
+
+.present-overlay { position: fixed; inset: 0; background: var(--ink); z-index: 1000; display: flex; flex-direction: column; }
+.present-bar { display: flex; justify-content: space-between; align-items: center; padding: 18px 32px; color: var(--paper); border-bottom: 1px solid rgba(255,255,255,0.08); }
+.present-bar .left { display: flex; align-items: baseline; gap: 18px; }
+.pb-eyebrow { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--c-butter); font-weight: 700; }
+.pb-title { font-family: var(--ff-display); font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+.pb-count { font-size: 13px; color: rgba(255,255,255,0.6); font-family: var(--ff-display); font-weight: 600; }
+.present-bar .right { display: flex; align-items: center; gap: 8px; }
+.p-btn { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: var(--paper); padding: 9px 16px; font-weight: 600; font-size: 14px; font-family: var(--ff-body); border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.p-btn:hover { background: rgba(255,255,255,0.1); }
+.p-btn.primary { background: var(--c-butter); color: var(--ink); border-color: var(--c-butter); }
+.p-btn.primary:hover { background: var(--paper); }
+.present-body { flex: 1; display: grid; grid-template-columns: 320px 1fr; min-height: 0; }
+.present-playlist { background: rgba(255,255,255,0.03); border-right: 1px solid rgba(255,255,255,0.08); padding: 24px 16px; overflow-y: auto; color: var(--paper); }
+.present-playlist h4 { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.5); font-weight: 700; margin: 0 0 14px; padding: 0 8px; }
+.pl-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 14px; cursor: pointer; color: rgba(255,255,255,0.85); user-select: none; border: 1px solid transparent; margin-bottom: 4px; }
+.pl-item:hover { background: rgba(255,255,255,0.05); }
+.pl-item.active { background: rgba(251, 229, 164, 0.16); color: var(--c-butter); border-color: rgba(251, 229, 164, 0.35); }
+.pl-item.dragging { opacity: 0.4; }
+.pl-item .pl-num { width: 28px; font-family: var(--ff-display); font-weight: 700; font-size: 15px; color: var(--c-butter); text-align: center; font-variant-numeric: tabular-nums; }
+.pl-item .pl-meta { flex: 1; min-width: 0; }
+.pl-item .pl-mt { font-size: 10.5px; color: rgba(255,255,255,0.5); letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; }
+.pl-item .pl-name { font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; }
+.pl-item .pl-grab { color: rgba(255,255,255,0.3); cursor: grab; }
+.pl-item .pl-remove { background: transparent; color: rgba(255,255,255,0.4); font-size: 16px; }
+.pl-item .pl-remove:hover { color: var(--c-coral); }
+.present-stage { overflow-y: auto; padding: 32px; display: flex; justify-content: center; }
+.present-stage-inner { width: 100%; max-width: 1680px; background: var(--paper); padding: 48px 56px 72px; color: var(--ink); min-height: calc(100vh - 130px); border-radius: var(--r-xl); }
+.present-eyebrow { display: flex; align-items: baseline; gap: 18px; padding-bottom: 14px; border-bottom: 2px solid var(--ink); margin-bottom: 28px; }
+.pe-num { font-family: var(--ff-display); font-weight: 800; font-size: 18px; color: var(--c-butter-d); font-variant-numeric: tabular-nums; }
+.pe-mt { font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-soft); font-weight: 700; }
+.pe-title { font-family: var(--ff-display); font-size: 38px; font-weight: 700; margin-left: auto; margin-right: 0; color: var(--ink); letter-spacing: -0.02em; }
+
+.present-overlay.fullscreen { background: var(--ink); cursor: default; }
+.present-overlay.chrome-off { cursor: none; }
+.present-overlay.chrome-off .present-topbar, .present-overlay.chrome-off .present-progress { opacity: 0; transform: translateY(-6px); pointer-events: none; }
+.present-overlay.chrome-off .present-progress { transform: translateY(6px); }
+.present-topbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1010; display: flex; justify-content: space-between; align-items: center; padding: 14px 26px; background: linear-gradient(180deg, rgba(20,25,42,0.78), rgba(20,25,42,0)); color: var(--paper); transition: opacity 0.25s ease, transform 0.25s ease; }
+.ptb-left { display: inline-flex; align-items: baseline; gap: 12px; font-family: var(--ff-display); }
+.ptb-mt { font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-butter); font-weight: 700; }
+.ptb-sep { color: rgba(255,255,255,0.4); }
+.ptb-name { font-size: 18px; font-weight: 700; color: var(--paper); }
+.ptb-right { display: inline-flex; align-items: center; gap: 8px; }
+.ptb-count { font-family: var(--ff-display); font-weight: 700; font-size: 13px; color: rgba(255,255,255,0.75); padding: 0 8px; font-variant-numeric: tabular-nums; }
+.present-stage.full { flex: 1; overflow-y: auto; padding: 0; background: var(--ink); }
+.present-stage.full .present-stage-inner { width: 100%; max-width: none; background: var(--paper); padding: 56px 64px 96px; min-height: 100vh; border-radius: 0; }
+.present-progress { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 1010; display: flex; align-items: center; gap: 14px; padding: 10px 18px; background: rgba(20,25,42,0.72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-radius: 999px; transition: opacity 0.25s ease, transform 0.25s ease; }
+.pp-track { display: flex; align-items: center; gap: 7px; max-width: 60vw; flex-wrap: wrap; justify-content: center; }
+.pp-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.28); border: 0; cursor: pointer; padding: 0; transition: all 0.18s ease; }
+.pp-dot:hover { background: rgba(255,255,255,0.55); transform: scale(1.18); }
+.pp-dot.done { background: rgba(255,255,255,0.55); }
+.pp-dot.active { background: var(--c-butter); width: 28px; border-radius: 999px; box-shadow: 0 0 0 3px rgba(251,229,164,0.18); }
+.pp-label { font-family: var(--ff-display); font-weight: 700; font-size: 13px; color: var(--paper); font-variant-numeric: tabular-nums; padding-left: 4px; border-left: 1px solid rgba(255,255,255,0.18); margin-left: 4px; padding: 0 0 0 14px; }
+
+.present-picker { flex: 1; display: grid; grid-template-columns: 1fr 380px; min-height: 0; }
+.pp-left { padding: 48px 56px; overflow-y: auto; color: var(--paper); }
+.pp-left h2 { font-family: var(--ff-display); font-size: 34px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.02em; }
+.pp-left .pp-intro { color: rgba(255,255,255,0.6); font-size: 15px; margin-bottom: 32px; }
+.pp-section { margin-bottom: 28px; }
+.pp-section h3 { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--c-butter); font-weight: 700; margin: 0 0 12px; display: flex; gap: 10px; align-items: center; }
+.pp-section h3 .pp-full { font-family: var(--ff-body); letter-spacing: 0; text-transform: none; font-size: 13px; color: rgba(255,255,255,0.45); font-weight: 500; }
+.pp-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.pp-chip { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); color: var(--paper); font-size: 13.5px; font-weight: 600; border-radius: 999px; cursor: pointer; }
+.pp-chip:hover { background: rgba(255,255,255,0.1); }
+.pp-chip.selected { background: var(--c-butter); color: var(--ink); border-color: var(--c-butter); }
+.pp-chip .pp-tick { width: 16px; height: 16px; border-radius: 50%; background: rgba(255,255,255,0.1); display: inline-flex; align-items: center; justify-content: center; font-size: 10px; }
+.pp-chip.selected .pp-tick { background: var(--ink); color: var(--c-butter); }
+.pp-right { background: rgba(255,255,255,0.03); border-left: 1px solid rgba(255,255,255,0.08); padding: 32px 24px; display: flex; flex-direction: column; color: var(--paper); min-height: 0; }
+.pp-right h3 { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.55); font-weight: 700; margin: 0 0 14px; display: flex; justify-content: space-between; }
+.pp-right h3 span { color: var(--c-butter); }
+.pp-list { flex: 1; overflow-y: auto; margin-bottom: 16px; }
+.pp-empty { padding: 40px 16px; text-align: center; color: rgba(255,255,255,0.4); font-size: 14px; }
+
+.dialog-backdrop { position: fixed; inset: 0; background: rgba(20,25,42,0.45); z-index: 800; display: grid; place-items: center; }
+.dialog { background: var(--paper); border-radius: var(--r-xl); padding: 36px 40px; width: 520px; max-width: 92vw; border-top: 6px solid var(--c-butter-d); }
+.dialog h3 { font-family: var(--ff-display); font-size: 26px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 8px; }
+.dialog p { color: var(--ink-soft); font-size: 14px; margin: 0 0 22px; }
+.dialog input[type="text"] { width: 100%; padding: 14px 16px; border: 1.5px solid var(--line); border-radius: var(--r-sm); background: var(--paper-2); font-size: 15px; font-family: var(--ff-body); margin-bottom: 18px; }
+.dialog input[type="text"]:focus { outline: 2px solid var(--c-butter-d); border-color: var(--c-butter-d); }
+.dialog-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.version-list { max-height: 360px; overflow-y: auto; border: 1.5px solid var(--line); border-radius: var(--r-sm); margin-bottom: 20px; }
+.version-item { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--line-soft); cursor: pointer; }
+.version-item:last-child { border-bottom: 0; }
+.version-item:hover { background: var(--paper-2); }
+.version-item .vi-name { font-weight: 600; flex: 1; }
+.version-item .vi-when { font-size: 12px; color: var(--ink-soft); font-family: var(--ff-display); font-weight: 600; letter-spacing: 0.02em; }
+.version-item .vi-del { background: transparent; color: var(--ink-soft); font-size: 16px; }
+.version-item .vi-del:hover { color: var(--warn); }
+
+.toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 14px 24px; font-size: 14px; font-weight: 600; border-radius: 999px; letter-spacing: 0.01em; z-index: 1500; box-shadow: 0 8px 24px rgba(20,25,42,0.25); }
+
+[contenteditable="true"]:focus { outline: 2px solid var(--c-butter-d); outline-offset: 3px; border-radius: 4px; }
+.present-playlist::-webkit-scrollbar, .pp-list::-webkit-scrollbar { width: 6px; }
+.present-playlist::-webkit-scrollbar-thumb, .pp-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+
+@media print { body { background: white; } .app { padding: 0; } .stage { box-shadow: none; border: 0; border-radius: 0; } }
+
+.img-slot.loaded { position: relative; overflow: hidden; }
+.img-upload-overlay { position: absolute; inset: 0; background: rgba(20,25,42,0.45); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--ff-body); font-size: 13px; font-weight: 700; opacity: 0; transition: opacity 0.15s ease; border-radius: inherit; }
+.img-slot:hover .img-upload-overlay, .ps-portrait:hover .img-upload-overlay, .img-full-slot:hover .img-upload-overlay, .ps-landscape:hover .img-upload-overlay { opacity: 1; }
+
+/* ── Division auth & drive ─────────────────────────────── */
+.auth-wide { width: 580px; max-width: 95vw; }
+.div-pick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 22px; }
+.div-pick-btn { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; padding: 15px 16px; background: var(--bg); border: 1.5px solid var(--line); border-radius: var(--r); cursor: pointer; text-align: left; transition: all 0.12s ease; font-family: var(--ff-body); }
+.div-pick-btn:hover { background: var(--c-butter); border-color: var(--c-butter-d); transform: translateY(-1px); }
+.div-pick-btn .dpb-short { font-family: var(--ff-display); font-size: 16px; font-weight: 700; color: var(--ink); }
+.div-pick-btn .dpb-full { font-size: 11.5px; font-weight: 500; color: var(--ink-soft); line-height: 1.4; }
+.div-badge { display: inline-flex; align-items: center; gap: 7px; padding: 8px 14px; background: var(--ok-soft); border-radius: 999px; font-family: var(--ff-body); font-size: 13px; font-weight: 700; color: var(--ok); }
+.div-badge .db-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); flex-shrink: 0; }
+.drive-chip { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; font-family: var(--ff-body); font-size: 12.5px; font-weight: 700; background: var(--bg); color: var(--ink-soft); }
+.drive-chip.connected { background: var(--ok-soft); color: var(--ok); }
+.drive-chip.saving { background: var(--c-butter); color: var(--ink); }
+.drive-chip.error { background: var(--warn-soft); color: var(--warn); }
+.main-tab.locked { opacity: 0.42; }
+.input-error { color: var(--warn); font-size: 13px; font-weight: 600; margin: -10px 0 14px; }
+
+/* ── Loading splash ─────────────────────────────────────── */
+.splash-backdrop { position: fixed; inset: 0; background: rgba(20,25,42,0.6); backdrop-filter: blur(6px); z-index: 2000; display: grid; place-items: center; }
+.splash-card { background: var(--paper); border-radius: var(--r-xl); padding: 52px 56px; width: 480px; max-width: 92vw; text-align: center; box-shadow: 0 32px 80px rgba(20,25,42,0.22); }
+.splash-logo { width: 72px; height: 72px; border-radius: 22px; background: var(--ink); color: var(--paper); display: grid; place-items: center; font-family: var(--ff-display); font-weight: 800; font-size: 22px; margin: 0 auto 24px; }
+.splash-title { font-family: var(--ff-display); font-size: 26px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+.splash-sub { font-size: 14px; color: var(--ink-soft); margin-bottom: 8px; line-height: 1.6; }
+  </style>
+
+  <!-- React 18 -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- ─────── data.js — seed + helpers ─────── -->
+  <script>
+const uid = (() => { let n = 1000; return (prefix = "id") => `${prefix}-${++n}`; })();
+window.__uid = uid;
+
+const kpiPct = (title, subtitle, value, target, trend, status, width = 3) => ({ id: uid("o"), type: "kpi-pct", hidden: false, width, data: { title, subtitle, value, target, trend, status } });
+const kpi = (title, subtitle, value, unit, target, trend, status, width = 3, lowerIsBetter = false) => ({ id: uid("o"), type: "kpi", hidden: false, width, data: { title, subtitle, value, unit, target, trend, status, lowerIsBetter } });
+const text = (heading, body, width = 12) => ({ id: uid("o"), type: "text", hidden: false, width, data: { heading, body } });
+const sectionHeader = (label, eyebrow = "") => ({ id: uid("o"), type: "section", hidden: false, width: 12, data: { label, eyebrow } });
+const image = (label, width = 6) => ({ id: uid("o"), type: "image", hidden: false, width, data: { label, caption: "" } });
+const imageText = (label, heading, body, width = 12) => ({ id: uid("o"), type: "image-text", hidden: false, width, data: { label, heading, body } });
+const timeline = (title, rows, width = 12) => ({ id: uid("o"), type: "timeline", hidden: false, width, data: { title, rows } });
+const tlRow = (label, meta, blocks) => ({ id: uid("row"), label, meta, blocks: blocks.map((b) => ({ id: uid("blk"), ...b })) });
+const chart = (title, subtitle, months, bars, line, width = 12) => ({ id: uid("o"), type: "chart", hidden: false, width, data: { title, subtitle, months, bars, line, barLabel: "ผลงานจริง", lineLabel: "เป้าหมาย" } });
+const picSpread = (heading, body, portraitSide = "left", landscapeCount = 4) => ({ id: uid("o"), type: "pic-spread", hidden: false, width: 12, data: { heading, body, portraitSide, portraitLabel: "ใส่รูป portrait", landscapes: Array.from({ length: landscapeCount }, (_, i) => ({ label: `รูป ${i + 1}` })) } });
+const tableObj = (title, headers, rows, width = 12) => ({ id: uid("o"), type: "table", hidden: false, width, data: { title, headers, rows } });
+const imageFull = (label = "ใส่รูปขนาดเต็มสไลด์") => ({ id: uid("o"), type: "image-full", hidden: false, width: 12, data: { label, caption: "" } });
+const kpiProject = (projectType, projectName, percent, status, width = 4) => ({ id: uid("o"), type: "kpi-project", hidden: false, width, data: { projectType, projectName, percent, status } });
+
+const tabKPS = { id: uid("mt"), short: "กปส-พ.", full: "กองประเมินผลกระทบสิ่งแวดล้อม", subTabs: [
+  { id: uid("st"), name: "Dashboard สรุป", objects: [
+    sectionHeader("โครงการพลังงานหมุนเวียน", "6 โครงการ · พ.ค. 69"),
+    kpiProject("รายงานสิ่งแวดล้อม โรงไฟฟ้าพลังน้ำ", "เขื่อนลำตะคอง", 42, "green"),
+    kpiProject("CoP/ESA Floating Solar", "เขื่อนศรีนครินทร์ ชุดที่ 1", 75, "green"),
+    kpiProject("CoP/ESA Floating Solar", "เขื่อนวชิราลงกรณ ชุดที่ 1", 40, "green"),
+    kpiProject("CoP/ESA Floating Solar", "เขื่อนภูมิพล ชุดที่ 1 และ 2", 35, "green"),
+    kpiProject("CoP/ESA Floating Solar", "เขื่อนศรีนครินทร์ ชุดที่ 2 และ 3", 10, "red"),
+    kpiProject("CoP/ESA Floating Solar", "เขื่อนอุบลรัตน์ ชุดที่ 2", 45, "red"),
+    sectionHeader("โครงการระบบส่ง", "5 โครงการ · พ.ค. 69"),
+    kpiProject("IEE สายส่ง 500 kV", "นครราชสีมา 4 – วังน้อย", 30, "green"),
+    kpiProject("IEE เคเบิล 230 kV", "ขนอม – เกาะสมุย", 100, "green"),
+    kpiProject("IEE สายส่ง 22 kV FPV", "เขื่อนน้ำพุง", 100, "green"),
+    kpiProject("IEE สายส่ง 500 kV", "บางสะพาน 2 – สุราษฎร์ธานี 2", 90, "red"),
+    kpiProject("IEE สายส่ง 500 kV", "แม่เมาะ 3 – ลำพูน 3 (ปรับแนว)", 100, "red"),
+    sectionHeader("โครงการโรงไฟฟ้าถ่านหินและเหมือง", "3 โครงการ · พ.ค. 69"),
+    kpiProject("รายงานเปลี่ยนแปลง EHIA · แม่เมาะ (ครั้งที่ 2)", "งานวิจัย CCUS และ SPG", 55, "green"),
+    kpiProject("รายงานเปลี่ยนแปลง EHIA · แม่เมาะ (ครั้งที่ 3)", "Refurbished MM-T12, T13", 10, "green"),
+    kpiProject("รายงานเปลี่ยนแปลง EIA · เหมืองแร่ลิกไนต์แม่เมาะ (ครั้งที่ 1)", "แผนผังที่ทิ้งดิน", 9, "green"),
+    sectionHeader("โครงการอื่น ๆ", "2 โครงการ · พ.ค. 69"),
+    kpiProject("พื้นที่สีเขียว", "งานพัฒนาพื้นที่สีเขียวยั่งยืน กฟผ.", 21, "green"),
+    kpiProject("โรงไฟฟ้านิวเคลียร์ SMR", "การพัฒนาแนวทางการศึกษา EHIA และงานที่เกี่ยวข้อง", 25, "green"),
+  ] },
+  { id: uid("st"), name: "โครงการพลังงานหมุนเวียน", objects: [
+    sectionHeader("ความก้าวหน้ารายโครงการ", "6 โครงการ · พ.ค. 69"),
+    timeline("ระยะดำเนินงาน — พลังงานหมุนเวียน", [
+      tlRow("เขื่อนลำตะคอง", "รายงานสิ่งแวดล้อม โรงไฟฟ้าพลังน้ำ", [{ title: "ภาพรวมเดือนนี้", period: "พ.ค. 69", progress: 42, status: "green" }]),
+      tlRow("เขื่อนศรีนครินทร์ ชุดที่ 1", "CoP/ESA Floating Solar", [{ title: "ภาพรวมเดือนนี้", period: "พ.ค. 69", progress: 75, status: "green" }]),
+      tlRow("เขื่อนวชิราลงกรณ ชุดที่ 1", "CoP/ESA Floating Solar", [{ title: "ภาพรวมเดือนนี้", period: "พ.ค. 69", progress: 40, status: "green" }]),
+      tlRow("เขื่อนภูมิพล ชุดที่ 1 และ 2", "CoP/ESA Floating Solar", [{ title: "ภาพรวมเดือนนี้", period: "พ.ค. 69", progress: 35, status: "green" }]),
+      tlRow("เขื่อนศรีนครินทร์ ชุดที่ 2 และ 3", "CoP/ESA Floating Solar", [{ title: "ภาพรวมเดือนนี้", period: "พ.ค. 69", progress: 10, status: "red" }]),
+      tlRow("เขื่อนอุบลรัตน์ ชุดที่ 2", "CoP/ESA Floating Solar", [{ title: "ภาพรวมเดือนนี้", period: "พ.ค. 69", progress: 45, status: "red" }]),
+    ]),
+  ] },
+  { id: uid("st"), name: "โครงการระบบส่ง", objects: [
+    sectionHeader("ความก้าวหน้ารายโครงการ", "5 โครงการ · พ.ค. 69"),
+    timeline("ระยะดำเนินงาน — ระบบส่ง", [
+      tlRow("นครราชสีมา 4 – วังน้อย", "IEE สายส่ง 500 kV", [{ title: "ภาพรวมเดือนนี้", period: "พ.ค. 69", progress: 30, status: "green" }]),
+      tlRow("ขนอม – เกาะสมุย", "IEE เคเบิล 230 kV", [{ title: "ภาพรวมเดือนนี้", period: "พ.ค. 69", progress: 100, status: "green" }]),
+      tlRow("เขื่อนน้ำพุง", "IEE สายส่ง 22 kV FPV", [{ title: "ภาพรวมเดือนนี้", period: "พ.ค. 69", progress: 100, status: "green" }]),
+      tlRow("บางสะพาน 2 – สุราษฎร์ธานี 2", "IEE สายส่ง 500 kV", [{ title: "ภาพรวมเดือนนี้", period: "พ.ค. 69", progress: 90, status: "red" }]),
+      tlRow("แม่เมาะ 3 – ลำพูน 3 (ปรับแนว)", "IEE สายส่ง 500 kV", [{ title: "ภาพรวมเดือนนี้", period: "พ.ค. 69", progress: 100, status: "red" }]),
+    ]),
+  ] },
+  { id: uid("st"), name: "โครงการโรงไฟฟ้าถ่านหินและเหมือง", objects: [
+    sectionHeader("ความก้าวหน้ารายโครงการ", "3 โครงการ · พ.ค. 69"),
+    timeline("ระยะดำเนินงาน — ถ่านหินและเหมือง", [
+      tlRow("งานวิจัย CCUS และ SPG", "รายงานเปลี่ยนแปลง EHIA · แม่เมาะ (ครั้งที่ 2)", [{ title: "ภาพรวมเดือนนี้", period: "พ.ค. 69", progress: 55, status: "green" }]),
+      tlRow("Refurbished MM-T12, T13", "รายงานเปลี่ยนแปลง EHIA · แม่เมาะ (ครั้งที่ 3)", [{ title: "ภาพรวมเดือนนี้", period: "พ.ค. 69", progress: 10, status: "green" }]),
+      tlRow("แผนผังที่ทิ้งดิน", "รายงานเปลี่ยนแปลง EIA · เหมืองแร่ลิกไนต์แม่เมาะ (ครั้งที่ 1)", [{ title: "ภาพรวมเดือนนี้", period: "พ.ค. 69", progress: 9, status: "green" }]),
+    ]),
+  ] },
+  { id: uid("st"), name: "โครงการอื่น ๆ", objects: [
+    sectionHeader("ความก้าวหน้ารายโครงการ", "2 โครงการ · พ.ค. 69"),
+    timeline("ระยะดำเนินงาน — อื่น ๆ", [
+      tlRow("งานพัฒนาพื้นที่สีเขียวยั่งยืน กฟผ.", "พื้นที่สีเขียว", [{ title: "ภาพรวมเดือนนี้", period: "พ.ค. 69", progress: 21, status: "green" }]),
+      tlRow("การพัฒนาแนวทางการศึกษา EHIA และงานที่เกี่ยวข้อง", "โรงไฟฟ้านิวเคลียร์ SMR", [{ title: "ภาพรวมเดือนนี้", period: "พ.ค. 69", progress: 25, status: "green" }]),
+    ]),
+  ] },
+] };
+
+const tabKTS = { id: uid("mt"), short: "กตส-พ.", full: "กองตรวจติดตามคุณภาพสิ่งแวดล้อม", subTabs: [
+  { id: uid("st"), name: "งานน้ำ", objects: [picSpread("การตรวจติดตามคุณภาพน้ำ", "งานตรวจวัดและติดตามคุณภาพน้ำผิวดิน น้ำใต้ดิน และน้ำทิ้งของโรงไฟฟ้า — รายงานสรุปผลการตรวจวัดประจำเดือน พร้อมแนวโน้มเปรียบเทียบกับเกณฑ์มาตรฐาน", "left", 4)] },
+  { id: uid("st"), name: "งานอากาศ", objects: [picSpread("การตรวจติดตามคุณภาพอากาศ", "สถานีตรวจวัดคุณภาพอากาศต่อเนื่อง (AAQMs) บริเวณโรงไฟฟ้าและพื้นที่ชุมชนรอบโครงการ — สรุปค่าฝุ่นละออง, NOx, SO₂ และเทียบเกณฑ์รายเดือน", "left", 4)] },
+  { id: uid("st"), name: "งานเสียง", objects: [picSpread("การตรวจติดตามระดับเสียง", "ตรวจวัดระดับเสียงในพื้นที่โครงการและพื้นที่ชุมชนข้างเคียง — เปรียบเทียบกับเกณฑ์มาตรฐานทั้งช่วงกลางวันและกลางคืน", "right", 4)] },
+  { id: uid("st"), name: "Circular Economy Organization", objects: [imageFull("ภาพรวมงาน Circular Economy ระดับองค์กร — ใส่รูปเต็มสไลด์")] },
+  { id: uid("st"), name: "Circular Economy for Society", objects: [imageFull("ภาพกิจกรรม Circular Economy เพื่อสังคม — ใส่รูปเต็มสไลด์")] },
+  { id: uid("st"), name: "Biodiversity", objects: [
+    picSpread("การติดตามความหลากหลายทางชีวภาพ", "สำรวจชนิดพันธุ์พืช-สัตว์ในพื้นที่โครงการและพื้นที่อนุรักษ์ — ติดตามแนวโน้มจำนวนชนิด ความถี่การพบ และความสมบูรณ์ของระบบนิเวศ", "right", 3),
+    text("ประเด็นเด่นประจำเดือน", "พบนกชนิดใหม่ในพื้นที่อนุรักษ์ของโครงการ 2 ชนิด · กิจกรรมปลูกพันธุ์ไม้ท้องถิ่นร่วมกับชุมชน 4 ครั้ง"),
+  ] },
+  { id: uid("st"), name: "งานรับจ้างบุคคลภายนอก", objects: [
+    sectionHeader("งานรับจ้างบุคคลภายนอก", "สรุปผลการดำเนินงานและรายได้"),
+    image("รูปประกอบ 1 — กิจกรรมรับจ้าง", 6),
+    image("รูปประกอบ 2 — สถานีตรวจวัด", 6),
+    tableObj("สรุปสัญญารับจ้างบุคคลภายนอก (ปีงบ 2569-2570)",
+      ["งาน", "มูลค่าสัญญา (2569-2570)", "รายได้ (สะสม)", "ค่าใช้จ่าย (สะสม)", "กำไร (สะสม)"],
+      [
+        ["งานบำรุงรักษา AAQMs โรงไฟฟ้า บริษัท ราชบุรีพาวเวอร์ จำกัด (RPCL)", "1,000,000", "—", "94,125", "—"],
+        ["งานบำรุงรักษา AAQMs และระบบตรวจวัดคุณภาพน้ำทิ้ง โรงไฟฟ้าราชบุรี (RGCO)", "4,930,000", "616,250", "184,523", "431,727"],
+        ["รวม 2 สัญญา", "5,930,000", "616,250", "278,648", "337,602"],
+      ]
+    ),
+    text("สรุปและข้อสังเกต", "การดำเนินงานเป็นไปตามแผน · สัญญา RGCO มีกำไรสะสมตามเป้า · สัญญา RPCL อยู่ระหว่างเริ่มงาน รายได้ยังไม่รับรู้"),
+  ] },
+  { id: uid("st"), name: "งานสนับสนุน", objects: [picSpread("งานสนับสนุนภายในและภายนอก", "การสนับสนุนงานวิชาการ การให้คำปรึกษา การฝึกอบรม และการประสานหน่วยงานราชการ — สรุปกิจกรรมเด่นประจำเดือน", "left", 3)] },
+  { id: uid("st"), name: "ประชุมไตรภาคี", objects: [picSpread("การประชุมไตรภาคี", "การประชุมร่วมระหว่างหน่วยงานราชการ ชุมชน และเจ้าของโครงการ เพื่อติดตามความคืบหน้าและรับฟังข้อกังวล — สรุปประเด็นและมติประจำเดือน", "right", 2)] },
+] };
+
+const tabKSS = { id: uid("mt"), short: "กสส-พ.", full: "กองส่งเสริมคุณภาพสิ่งแวดล้อม", subTabs: [
+  { id: uid("st"), name: "ประกวดนวัตกรรมสิ่งแวดล้อม", objects: [
+    sectionHeader("โครงการประกวดแนวคิดนวัตกรรมด้านสิ่งแวดล้อม", "พ.ค. 69"),
+    image("ภาพกิจกรรมประกวด — ใส่รูป", 12),
+    timeline("ขั้นตอนการดำเนินโครงการ", [
+      tlRow("ประชาสัมพันธ์และรับสมัคร", "ม.ค.-มี.ค. 69", [
+        { title: "เปิดรับสมัคร", period: "ม.ค.-ก.พ. 69", progress: 100, status: "green" },
+        { title: "ปิดรับสมัคร", period: "มี.ค. 69", progress: 100, status: "green" },
+      ]),
+      tlRow("คัดเลือกรอบแรก", "เม.ย. 69", [
+        { title: "พิจารณาเอกสาร", period: "เม.ย. 69", progress: 100, status: "green" },
+      ]),
+      tlRow("รอบนำเสนอ", "พ.ค.-มิ.ย. 69", [
+        { title: "Pitch กรรมการ", period: "พ.ค. 69", progress: 60, status: "green" },
+        { title: "ประกาศผล", period: "มิ.ย. 69", progress: 0, status: "red" },
+      ]),
+    ]),
+    text("สรุปประจำเดือน", "เดือนนี้อยู่ระหว่างขั้นตอนนำเสนอผลงานต่อคณะกรรมการ มีทีมเข้ารอบสุดท้าย — คาดประกาศผลปลาย มิ.ย. 69"),
+  ] },
+  { id: uid("st"), name: "สร้างเครือข่าย", objects: [picSpread("สร้างเครือข่ายด้านสิ่งแวดล้อม", "กิจกรรมประสานเครือข่ายภาครัฐ ภาคเอกชน สถาบันการศึกษา และชุมชน — สรุปจำนวนเครือข่ายใหม่ที่เข้าร่วมและกิจกรรมร่วมประจำเดือน", "left", 4)] },
+  { id: uid("st"), name: "งานบริหาร CSR อสค.", objects: [
+    sectionHeader("งานบริหารการดำเนินงาน CSR อสค.", "สรุปโครงการและสถานะ"),
+    tableObj("ตารางบริหารการดำเนินงาน CSR อสค.",
+      ["ลำดับ", "โครงการ/กิจกรรม", "พื้นที่ดำเนินการ", "งบประมาณ (บาท)", "ผู้รับผิดชอบ", "สถานะ"],
+      Array.from({ length: 14 }, (_, i) => [String(i + 1), `โครงการ/กิจกรรม CSR ที่ ${i + 1}`, "—", "—", "—", "—"])),
+  ] },
+  { id: uid("st"), name: "งานวันสิ่งแวดล้อม", objects: [picSpread("งานวันสิ่งแวดล้อม", "การจัดงานวันสิ่งแวดล้อมโลกและกิจกรรมรณรงค์ — สรุปธีมประจำปี ผู้เข้าร่วม นิทรรศการ และผลตอบรับ", "right", 4)] },
+  { id: uid("st"), name: "โครงการโรงเรียนเปลี่ยนโลก", objects: [
+    sectionHeader("โครงการโรงเรียนเปลี่ยนโลก", ""),
+    text("ภาพรวมโครงการ", "โครงการพัฒนาโรงเรียนต้นแบบด้านสิ่งแวดล้อม สนับสนุนการเรียนรู้และการลงมือทำเพื่อสิ่งแวดล้อม — สรุปจำนวนโรงเรียนเข้าร่วม กิจกรรมเด่น และผลที่เกิดขึ้นต่อชุมชน"),
+  ] },
+  { id: uid("st"), name: "รักษ์ - แลก - พบ", objects: [picSpread("กิจกรรม รักษ์ - แลก - พบ", "กิจกรรมเชื่อมโยงการอนุรักษ์ การแลกเปลี่ยนของใช้ และการพบปะสร้างเครือข่ายชุมชน — สรุปสถานที่จัด ผู้เข้าร่วม และจำนวนของที่หมุนเวียน", "left", 4)] },
+  { id: uid("st"), name: "การผลิตและเผยแพร่สื่อ", objects: [
+    sectionHeader("การผลิตและเผยแพร่สื่อสิ่งแวดล้อม", ""),
+    image("สื่อชิ้นที่ 1", 6),
+    image("สื่อชิ้นที่ 2", 6),
+    image("สื่อชิ้นที่ 3", 6),
+    image("สื่อชิ้นที่ 4", 6),
+    text("สรุปการเผยแพร่", "เดือนนี้ผลิตสื่อ ___ ชิ้น เผยแพร่ผ่านช่องทาง ___ มียอดเข้าถึง ___ ครั้ง"),
+  ] },
+  { id: uid("st"), name: "รายงาน กฟผ. (ฉบับประชาชน)", objects: [picSpread("จัดทำรายงานสิ่งแวดล้อม กฟผ. และรายงานสิ่งแวดล้อมฉบับประชาชนโรงไฟฟ้า ปี 2568", "ความคืบหน้าการรวบรวมข้อมูล จัดทำรูปเล่ม การตรวจสอบ และเตรียมเผยแพร่ทั้งฉบับองค์กรและฉบับประชาชน", "left", 4)] },
+  { id: uid("st"), name: "SROI สิรินธร", objects: [picSpread("SROI Hydro Floating Solar เขื่อนสิรินธร", "การประเมินผลตอบแทนทางสังคม (Social Return on Investment) ของโครงการ Hydro Floating Solar เขื่อนสิรินธร — สรุปขั้นตอนเก็บข้อมูล ค่าตัวชี้วัด และผลเบื้องต้น", "right", 4)] },
+  { id: uid("st"), name: "รายงาน & สนับสนุนข้อมูล", objects: [picSpread("จัดทำรายงานและสนับสนุนข้อมูลด้านสิ่งแวดล้อม", "งานสนับสนุนข้อมูลให้หน่วยงานภายในและภายนอก จัดทำรายงานเฉพาะกิจตามคำขอ — สรุปจำนวนเรื่อง ระยะเวลาเฉลี่ย และผู้ขอรับบริการ", "left", 3)] },
+  { id: uid("st"), name: "งานวิจัย", objects: [
+    sectionHeader("งานวิจัยฝ่ายสิ่งแวดล้อมโครงการ", "ผลงานวิจัยเด่นประจำเดือน"),
+    text("งานวิจัยชิ้นที่ 1", "หัวข้อ: ___\nผู้วิจัย: ___\nสถานะ: ___\nข้อค้นพบเบื้องต้น: ___"),
+    text("งานวิจัยชิ้นที่ 2", "หัวข้อ: ___\nผู้วิจัย: ___\nสถานะ: ___\nข้อค้นพบเบื้องต้น: ___"),
+    text("งานวิจัยชิ้นที่ 3", "หัวข้อ: ___\nผู้วิจัย: ___\nสถานะ: ___\nข้อค้นพบเบื้องต้น: ___"),
+  ] },
+] };
+
+const tabKBR = { id: uid("mt"), short: "กบร-พ.", full: "กองบริหารจัดการก๊าซเรือนกระจก", subTabs: [
+  { id: uid("st"), name: "Carbon Footprint", objects: [
+    sectionHeader("Eco-efficiency (Scope 1-3)", "ค่าสะสมของปีนี้"),
+    text("รายงาน Eco-efficiency เดือนนี้", "ค่าสะสมของปีนี้ XX MtCO₂eq ซึ่ง [น้อยกว่า/มากกว่า] ค่าคาดการณ์ที่ XX% โดยรายงานค่าของเดือนนี้ XX MtCO₂eq\n\nสาเหตุการเปลี่ยนแปลง:\n• เผาไหม้ผลิตไฟฟ้า [เพิ่มขึ้น/ลดลง] X%\n• การทำเหมืองถ่านหิน [เพิ่มขึ้น/ลดลง] X%\n• กำจัด SO₂ (FGD) [เพิ่มขึ้น/ลดลง] X%\n• ต้นทางเชื้อเพลิงฯ [เพิ่มขึ้น/ลดลง] X%"),
+    sectionHeader("GHG Emissions Intensity (Scope 1-2)", "ค่าสะสมถึงเดือนนี้"),
+    kpi("GHG Intensity (สะสม)", "เทียบกับปีฐาน", 0.4125, "tCO₂eq/MWh", 0.5538, -25.51, "green", 4, true),
+    kpi("การปล่อยก๊าซเรือนกระจก", "Scope 1-2 · ค่าสะสม", 3.65, "MtCO₂eq", 4.0, -0.35, "green", 4, true),
+    kpi("ปริมาณไฟฟ้าสุทธิ", "MWh สะสมปีนี้", 8901957, "MWh", 9000000, -1.1, "green", 4, true),
+    sectionHeader("ค่าเป้าหมายตาม SLB และ EGAT Carbon Neutrality", ""),
+    tableObj("ค่าเป้าหมายตาม Sustainability-Linked Bond (SLB) และ EGAT Carbon Neutrality",
+      ["ตัวชี้วัด", "2569", "2570", "2571", "2572", "2573", "2574", "2575"],
+      [
+        ["ค่าเป้าหมายตาม SLB", "—", "—", "—", "—", "—", "—", "—"],
+        ["EGAT Carbon Neutrality", "—", "—", "—", "—", "—", "—", "—"],
+        ["ผลการดำเนินงานจริง", "—", "—", "—", "—", "—", "—", "—"],
+      ]),
+  ] },
+  { id: uid("st"), name: "GHG Reduction (NDC)", objects: [
+    sectionHeader("แผนการลดก๊าซเรือนกระจกตาม NDC ของ กฟผ.", "ปี 2569"),
+    kpi("ลดก๊าซเรือนกระจกได้", "สะสมปี 2569", 2.0648, "MtCO₂eq", 8, 0, "red", 4),
+    chart("ปริมาณการลดก๊าซเรือนกระจกรายเดือน (รวมทุกมาตรการ)",
+      "เป้าหมายปี 2569: 8 MtCO₂eq · มาตรการ: RE + EE + Label No.5",
+      ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."],
+      [0.4, 0.8, 1.2, 1.6, 2.0648, 2.5, 3.0, 3.5, 4.5, 5.5, 6.5, 8.0],
+      [8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]),
+    text("หมายเหตุ", "1. มาตรการ RE คำนวณโดยใช้ค่าสัมประสิทธิ์การปล่อยก๊าซเรือนกระจกของระบบสายส่ง (Grid EF) สำหรับผู้ผลิตไฟฟ้า ปี 2567\n\n2. มาตรการ Label No. 5: อยู่ระหว่างรอข้อมูลรายงานผลการประหยัดไฟฟ้า ไตรมาสที่ 1 ปี 2569 จาก อชส.\n\n3. กราฟปัจจุบันแสดงค่ารวมทุกมาตรการ — หากต้องการแสดงแบบ stack แยกชั้น (RE/EE/Label No.5) ต้องอัปเกรด chart component (เฟส 2)"),
+  ] },
+  { id: uid("st"), name: "GHG Management Platform", objects: [
+    sectionHeader("แผน GHG Management Platform", ""),
+    imageFull("ภาพ Platform สรุปภาพรวม — ใส่รูปเต็มสไลด์"),
+    text("คำอธิบายแพลตฟอร์ม", "อธิบายโครงสร้าง Platform · บทบาทของแต่ละโมดูล · ผู้ใช้งาน · ความคืบหน้าการพัฒนา/เปิดใช้งานเดือนนี้ · แผนงานเดือนถัดไป"),
+  ] },
+  { id: uid("st"), name: "โครงการ T-VER", objects: [
+    sectionHeader("โครงการ T-VER", "7 โครงการ · พ.ค. 69"),
+    kpiProject("เพิ่มประสิทธิภาพ", "โครงการปรับปรุงระบบส่งไฟฟ้าระหว่าง รฟ.หินกอง - สฟ.ราชบุรี 2", 25, "red"),
+    kpiProject("พลังงานทดแทน", "โรงไฟฟ้าพลังงานแสงอาทิตย์ทุ่นลอยน้ำร่วมกับโรงไฟฟ้าพลังน้ำเขื่อนอุบลรัตน์ ชุดที่ 1", 34, "green"),
+    kpiProject("พลังงานทดแทน", "โรงไฟฟ้าพลังน้ำเขื่อนผาจุก", 34, "green"),
+    kpiProject("ภาคป่าไม้", "อพ.สธ. เขื่อนศรีนครินทร์ 1,025 ไร่", 35, "green"),
+    kpiProject("ภาคป่าไม้", "อพ.สธ. เขื่อนภูมิพล 8,758 ไร่", 35, "green"),
+    kpiProject("ภาคป่าไม้", "อพ.สธ. - กฟผ. เขื่อนสิรินธร", 10, "red"),
+    kpiProject("ภาคป่าไม้", "อพ.สธ. - กฟผ. เขื่อนสิริกิติ์", 10, "red"),
+  ] },
+  { id: uid("st"), name: "EGAT GCF", objects: [picSpread("EGAT Greenova Cool Fund: EGAT GCF", "สรุปความคืบหน้ากองทุน — เป้าหมาย กลุ่มสนับสนุน โครงการที่ได้รับทุน และความคืบหน้าการเบิกจ่ายประจำเดือน", "left", 4)] },
+  { id: uid("st"), name: "แผนพัฒนาบุคลากร", objects: [picSpread("แผนพัฒนาบุคลากร 2569", "กิจกรรมพัฒนาบุคลากรของกอง: การอบรม สัมมนา ดูงาน — สรุปจำนวนผู้เข้าร่วม หลักสูตรเด่น และความคืบหน้าตามแผน", "right", 4)] },
+  { id: uid("st"), name: "ส่งเสริมและสร้างความสัมพันธ์", objects: [picSpread("แผนงานส่งเสริมและสร้างความสัมพันธ์", "กิจกรรมประสานความร่วมมือกับหน่วยงานภาครัฐ ภาคเอกชน และภาคีเครือข่าย — สรุปกิจกรรมเด่นและผลที่ได้", "left", 4)] },
+  { id: uid("st"), name: "ข้อบังคับคาร์บอนเครดิต", objects: [picSpread("แผนงานแก้ไขข้อบังคับ และ/หรือ ระเบียบ กฟผ. ว่าด้วยการขายคาร์บอนเครดิต", "ความคืบหน้าการยกร่าง รับฟังความเห็น และเสนอเข้ากระบวนการอนุมัติ", "right", 3)] },
+  { id: uid("st"), name: "ธุรกิจผู้ทวนสอบ", objects: [
+    sectionHeader("แผนงานธุรกิจผู้ทวนสอบก๊าซเรือนกระจก", ""),
+    timeline("ความก้าวหน้าตามแผน", [
+      tlRow("ขึ้นทะเบียนผู้ทวนสอบ", "เป้า 30 ราย", [
+        { title: "รวบรวมเอกสาร", period: "ต.ค.-ธ.ค. 68", progress: 100, status: "green" },
+        { title: "ยื่นขึ้นทะเบียน", period: "ม.ค.-มี.ค. 69", progress: 100, status: "green" },
+        { title: "อนุมัติ", period: "เม.ย.-พ.ค. 69", progress: 80, status: "green" },
+      ]),
+      tlRow("งานทวนสอบรอบปี", "ลูกค้าภาครัฐ-เอกชน", [
+        { title: "Plan", period: "ต.ค. 68", progress: 100, status: "green" },
+        { title: "Field Visit", period: "พ.ย. 68 – มี.ค. 69", progress: 100, status: "green" },
+        { title: "Report", period: "เม.ย.-มิ.ย. 69", progress: 65, status: "green" },
+      ]),
+      tlRow("รายได้สะสม", "ปีงบ 2569", [
+        { title: "ยอดรับรู้", period: "ต.ค. 68 – พ.ค. 69", progress: 70, status: "green" },
+      ]),
+    ]),
+  ] },
+  { id: uid("st"), name: "ข้อตกลง REC", objects: [
+    sectionHeader("การบริหารข้อตกลงความร่วมมือทางธุรกิจ REC", "ปริมาณและรายได้ REC ปี 2569"),
+    kpi("REC จำหน่ายสะสม", "ปี 2569", 327867.19, "RECs", 350000, 0, "green", 6),
+    kpi("รายได้ REC สะสม", "ปี 2569 (บาท)", 10412446.90, "บาท", 12000000, 0, "green", 6),
+    chart("ปริมาณ REC จำหน่ายรายเดือน (RECs)",
+      "เส้นประ = ค่าเฉลี่ยรายเดือน · ดูเทรนด์การขาย REC ปี 2569",
+      ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."],
+      [22000, 28000, 35000, 32000, 28867, 0, 0, 0, 0, 0, 0, 0],
+      [27322, 27322, 27322, 27322, 27322, 27322, 27322, 27322, 27322, 27322, 27322, 27322]),
+    text("หมายเหตุ", "• กราฟแท่งแสดงปริมาณ REC จำหน่ายรายเดือน (หน่วย: RECs)\n• เส้นประ = ค่าเฉลี่ยจำหน่ายรายเดือน (ใช้เป็นเป้าหมายเทียบ)\n• รายได้ต่อ REC เฉลี่ย ≈ 31.76 บาท/REC\n• หมายเหตุ: chart ปัจจุบันยังไม่รองรับ dual-axis (บาท + RECs ในกราฟเดียว) — รายงานรายได้รวมในรูป KPI card แยก"),
+  ] },
+  { id: uid("st"), name: "ไฟฟ้าสีเขียว UGT", objects: [
+    sectionHeader("แผนงานโครงการอัตราค่าบริการไฟฟ้าสีเขียว UGT", ""),
+    kpi("UGT ส่งมอบ เม.ย. 69", "RECs", 21927.438, "RECs", 22000, 0, "green", 6),
+    kpi("UGT ส่งมอบสะสมปี 2569", "RECs", 76988.484, "RECs", 100000, 0, "green", 6),
+    tableObj("ปริมาณไฟฟ้าสีเขียวแยกตามโรงไฟฟ้าพลังน้ำ",
+      ["Hydropower Plant", "Generation (RECs)", "Issue (RECs)"],
+      [
+        ["VRK", "74,301.350", "7,393.476"],
+        ["SK", "146,060.250", "14,533.962"],
+        ["Total", "220,361.600", "21,927.438"],
+      ]),
+    text("หน่วยไฟฟ้าสีเขียวส่งมอบในเดือน มี.ค. 69", "PEA = 13,412.838 RECs\nMEA = 8,514.600 RECs"),
+    text("หมายเหตุ", "• ปริมาณ Generation และ Issue หน่วยเป็น RECs (1 REC = 1 MWh)\n• ข้อมูล PEA / MEA เป็นการส่งมอบเดือน มี.ค. 69 รอตัวเลขเดือน เม.ย. 69 จากผู้รับซื้อ"),
+  ] },
+] };
+
+const tabASC = { id: uid("mt"), short: "อสค.", full: "ส่วนกลาง — สำนักอำนวยการ", subTabs: [
+  { id: uid("st"), name: "PA", objects: [
+    sectionHeader("Performance Agreement (PA)", "รอ user ส่งโครง html มาแทนที่"),
+    text("Placeholder", "ส่วนนี้รอ user ส่งโครง HTML ที่ใช้งานอยู่เดิม — เมื่อได้รับแล้วจะแทนที่ block นี้ด้วย object types ที่ตรงกับโครงเดิม (text / table / chart / kpi ตามความเหมาะสม)"),
+  ] },
+  { id: uid("st"), name: "งบประมาณ", objects: [
+    sectionHeader("งบประมาณฝ่ายสิ่งแวดล้อมโครงการ", "ปีงบประมาณ 2569"),
+    tableObj("สรุปการเบิกจ่ายงบประมาณ",
+      ["หมวดงบประมาณ", "กรอบ (บาท)", "เบิกจ่าย (บาท)", "คงเหลือ (บาท)", "% เบิกจ่าย", "สถานะ"],
+      [
+        ["งบลงทุน", "—", "—", "—", "—", "—"],
+        ["งบดำเนินงาน", "—", "—", "—", "—", "—"],
+        ["งบบุคคล", "—", "—", "—", "—", "—"],
+        ["งบสนับสนุนอื่น ๆ", "—", "—", "—", "—", "—"],
+        ["รวมทั้งหมด", "—", "—", "—", "—", "—"],
+      ]),
+    text("หมายเหตุ", "ระบุสาเหตุการเบิกจ่ายต่ำ/สูงกว่าแผน · โครงการที่ใช้งบเด่น · แผนเร่งรัดเดือนถัดไป"),
+  ] },
+  { id: uid("st"), name: "AR-QADS", objects: [
+    sectionHeader("AR-QADS", "Audit & Quality Assurance — Documentation System"),
+    timeline("ความก้าวหน้าการดำเนินงาน AR-QADS", [
+      tlRow("Audit รอบปี", "เป้า 8 หน่วยงาน", [
+        { title: "Plan", period: "ต.ค.-พ.ย. 68", progress: 100, status: "green" },
+        { title: "Field Audit", period: "ธ.ค. 68 – มี.ค. 69", progress: 100, status: "green" },
+        { title: "Closing", period: "เม.ย.-พ.ค. 69", progress: 75, status: "green" },
+      ]),
+      tlRow("จัดทำเอกสารคุณภาพ", "ปรับปรุง QMS", [
+        { title: "ทบทวนเอกสาร", period: "ม.ค.-มี.ค. 69", progress: 100, status: "green" },
+        { title: "ประกาศใช้", period: "เม.ย.-พ.ค. 69", progress: 60, status: "red" },
+      ]),
+      tlRow("CAR / PAR", "แก้ไขข้อบกพร่อง", [
+        { title: "เปิด CAR", period: "ม.ค.-มี.ค. 69", progress: 100, status: "green" },
+        { title: "ปิด CAR", period: "เม.ย.-มิ.ย. 69", progress: 70, status: "green" },
+      ]),
+    ]),
+    picSpread("ภาพรวมและภาพกิจกรรม AR-QADS", "สรุปกิจกรรม Audit เด่นประจำเดือน · ภาพถ่ายการตรวจประเมิน · ประเด็นเด่น/ความเสี่ยงที่พบ", "left", 4),
+  ] },
+  { id: uid("st"), name: "QSSHE", objects: [picSpread("QSSHE — Quality, Safety, Security, Health & Environment", "สรุปงานด้านคุณภาพ ความปลอดภัย อาชีวอนามัย และสิ่งแวดล้อม — สถิติอุบัติเหตุ การฝึกซ้อม การตรวจสอบความปลอดภัย และผลการรณรงค์", "left", 4)] },
+  { id: uid("st"), name: "ธรรมาภิบาล", objects: [picSpread("ธรรมาภิบาล", "สรุปกิจกรรมส่งเสริมธรรมาภิบาล: การประเมินตนเอง · การประชุมคณะกรรมการ · การเปิดเผยข้อมูล · ผลการรับเรื่องร้องเรียน", "right", 4)] },
+  { id: uid("st"), name: "กิจกรรมคุณธรรมเป้าหมาย", objects: [
+    sectionHeader("กิจกรรมคุณธรรมเป้าหมาย", ""),
+    image("ภาพกิจกรรมคุณธรรมเป้าหมาย — ใส่รูป", 12),
+    tableObj("สรุปกิจกรรมคุณธรรมเป้าหมาย",
+      ["ลำดับ", "กิจกรรม", "ผู้รับผิดชอบ", "จำนวนผู้เข้าร่วม", "สถานะ"],
+      [
+        ["1", "—", "—", "—", "—"],
+        ["2", "—", "—", "—", "—"],
+        ["3", "—", "—", "—", "—"],
+        ["4", "—", "—", "—", "—"],
+      ]),
+  ] },
+] };
+
+window.__seedData = { meta: { company: "ฝ่ายสิ่งแวดล้อมโครงการ", reportTitle: "Monthly Report", period: "พฤษภาคม 2569" }, mainTabs: [tabKPS, tabKTS, tabKSS, tabKBR, tabASC] };
+  </script>
+
+  <!-- ─────── apiservice.js ─────── -->
+  <script>
+// ══════════════════════════════════════════════════════════════
+//  ApiService — Google Apps Script backend (no user login needed)
+//  ตั้งค่า: วาง URL ของ GAS Web App ที่ deploy แล้วด้านล่าง
+// ══════════════════════════════════════════════════════════════
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzGUotNNlJiZbwhMGNGPjUXF4a3rEMAa_wWhdycZYFan_Pvw1LUATn1AB2PZ1NT7G9I/exec";
+
+window.__imgCache = {};
+window.ApiService = (() => {
+  async function get(params) {
+    if (!GAS_URL || GAS_URL === "YOUR_GAS_URL_HERE") throw new Error("ยังไม่ได้ตั้งค่า GAS_URL");
+    const url = GAS_URL + "?" + new URLSearchParams(params);
+    const resp = await fetch(url, { redirect: "follow" });
+    if (!resp.ok) throw new Error("API " + resp.status);
+    const result = await resp.json();
+    if (result && result.error) throw new Error(result.error);
+    return result;
+  }
+  // POST ใช้ no-cors เพื่อให้ทำงานได้จาก file:// โดยไม่ติด CORS
+  // request ถึง GAS เสมอ แต่ไม่สามารถอ่าน response ได้ (ยอมรับได้สำหรับ save)
+  async function post(data) {
+    if (!GAS_URL || GAS_URL === "YOUR_GAS_URL_HERE") throw new Error("ยังไม่ได้ตั้งค่า GAS_URL");
+    await fetch(GAS_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify(data),
+    });
+    return { ok: true };
+  }
+  return {
+    isConfigured() { return !!(GAS_URL && GAS_URL !== "YOUR_GAS_URL_HERE"); },
+    async loadAll() { return get({ action: "loadAll" }); },
+    async saveDivision(divId, tab, meta, password) {
+      return post({ action: "save", divId, tab, meta, password });
+    },
+    async saveVersion(divId, versionName, tab, meta, password) {
+      return post({ action: "saveVersion", divId, versionName, tab, meta, password });
+    },
+  };
+})();
+  </script>
+
+  <!-- ─────── chart.jsx ─────── -->
+  <script type="text/babel" data-presets="react">
+const { useMemo } = React;
+function Chart({ months, bars, line, barLabel, lineLabel, format }) {
+  const W = 1100, H = 360;
+  const pad = { t: 24, r: 32, b: 56, l: 76 };
+  const innerW = W - pad.l - pad.r;
+  const innerH = H - pad.t - pad.b;
+  const maxRaw = Math.max(...bars, ...line);
+  const max = niceCeil(maxRaw * 1.15);
+  const yTicks = 5;
+  const stepY = max / yTicks;
+  const n = months.length;
+  const colW = innerW / n;
+  const barW = Math.min(48, colW * 0.42);
+  const fmt = format || defaultFormat;
+  const xFor = (i) => pad.l + colW * i + colW / 2;
+  const yFor = (v) => pad.t + innerH - (v / max) * innerH;
+  const pathD = useMemo(() => line.map((v, i) => `${i === 0 ? "M" : "L"} ${xFor(i)} ${yFor(v)}`).join(" "), [line, months]);
+  return (
+    <div className="chart-svg-wrap">
+      <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }}>
+        {Array.from({ length: yTicks + 1 }).map((_, i) => {
+          const v = stepY * i; const y = yFor(v);
+          return (<g key={`gy-${i}`}>
+            <line x1={pad.l} x2={W - pad.r} y1={y} y2={y} stroke={i === 0 ? "#15192a" : "#ece5d5"} strokeWidth={i === 0 ? 1.5 : 1} strokeDasharray={i === 0 ? "0" : "2 4"} />
+            <text x={pad.l - 12} y={y + 5} textAnchor="end" fontFamily="Sora, Bai Jamjuree, system-ui" fontSize="13" fontWeight="500" fill="#6c7282">{fmt(v)}</text>
+          </g>);
+        })}
+        {bars.map((v, i) => {
+          const x = xFor(i) - barW / 2; const y = yFor(v); const h = pad.t + innerH - y;
+          const isAhead = v >= line[i];
+          return (<g key={`b-${i}`}>
+            <rect x={x} y={y} width={barW} height={h} rx="10" fill={isAhead ? "#88a376" : "#b53737"} opacity={isAhead ? 1 : 0.92} />
+            <text x={xFor(i)} y={y - 10} textAnchor="middle" fontFamily="Sora, system-ui" fontSize="15" fontWeight="700" fill="#15192a">{fmt(v)}</text>
+          </g>);
+        })}
+        <path d={pathD} fill="none" stroke="#b5703f" strokeWidth="2.5" strokeDasharray="6 5" />
+        {line.map((v, i) => <g key={`d-${i}`}><circle cx={xFor(i)} cy={yFor(v)} r="6" fill="#f7d4bc" stroke="#b5703f" strokeWidth="2.5" /></g>)}
+        {months.map((m, i) => <text key={`x-${i}`} x={xFor(i)} y={H - pad.b + 28} textAnchor="middle" fontFamily="Bai Jamjuree, system-ui" fontSize="15" fontWeight="600" fill="#2a2f44">{m}</text>)}
+      </svg>
+    </div>
+  );
+}
+function niceCeil(v) { if (v <= 0) return 10; const pow = Math.pow(10, Math.floor(Math.log10(v))); const n = v / pow; let mult; if (n <= 1) mult = 1; else if (n <= 2) mult = 2; else if (n <= 2.5) mult = 2.5; else if (n <= 5) mult = 5; else mult = 10; return mult * pow; }
+function defaultFormat(v) { if (v === 0) return "0"; if (Math.abs(v) >= 1e6) return (v / 1e6).toFixed(v % 1e6 === 0 ? 0 : 1) + "M"; if (Math.abs(v) >= 1e3) return (v / 1e3).toFixed(v % 1e3 === 0 ? 0 : 1) + "K"; return String(v); }
+window.Chart = Chart;
+  </script>
+
+  <!-- ─────── objects.jsx ─────── -->
+  <script type="text/babel" data-presets="react">
+const { useRef, useCallback } = React;
+const { useState: useStateI, useEffect: useEffectI } = React;
+
+// รูปภาพเก็บเป็น dataURL ใน state โดยตรง ไม่ต้อง upload แยก
+function useImageUrl(fileId) {
+  const [url, setUrl] = useStateI(null);
+  useEffectI(() => {
+    if (!fileId) return;
+    // dataURL หรือ blob URL — ใช้ตรงได้เลย
+    if (fileId.startsWith("data:") || fileId.startsWith("blob:")) { setUrl(fileId); return; }
+  }, [fileId]);
+  if (fileId && (fileId.startsWith("data:") || fileId.startsWith("blob:"))) return fileId;
+  return url;
+}
+
+async function compressImage(file, maxW = 1200, quality = 0.72) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = () => {
+        const scale = Math.min(1, maxW / img.width);
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function pickAndUploadImage(onChange, data, labelKey = "label", fileIdKey = "fileId") {
+  return new Promise((resolve) => {
+    const input = document.createElement("input");
+    input.type = "file"; input.accept = "image/*";
+    input.onchange = async () => {
+      const file = input.files[0]; if (!file) { resolve(); return; }
+      try {
+        const dataUrl = await compressImage(file);
+        onChange({ [fileIdKey]: dataUrl, [labelKey]: file.name });
+        window.__showToast && window.__showToast("เลือกรูปแล้ว — กด บันทึก เพื่อบันทึกลง Drive ✓");
+      } catch (err) {
+        window.__showToast && window.__showToast("โหลดรูปไม่สำเร็จ: " + (err.message || err));
+      }
+      resolve();
+    };
+    input.click();
+  });
+}
+
+function Editable({ tag = "span", value, onChange, editable, multiline, className, placeholder, style }) {
+  const Tag = tag;
+  const onBlur = useCallback((e) => { const txt = multiline ? e.currentTarget.innerText : e.currentTarget.innerText.replace(/\n/g, " "); if (txt !== value) onChange(txt); }, [value, onChange, multiline]);
+  const onKeyDown = useCallback((e) => { if (!multiline && e.key === "Enter") { e.preventDefault(); e.currentTarget.blur(); } if (e.key === "Escape") { e.currentTarget.innerText = value || ""; e.currentTarget.blur(); } }, [multiline, value]);
+  return (<Tag className={className} style={style} contentEditable={editable} suppressContentEditableWarning onBlur={onBlur} onKeyDown={onKeyDown} data-placeholder={placeholder}>{value}</Tag>);
+}
+function EditableNum({ value, onChange, editable, className, suffix = "", style, format }) {
+  const onBlur = (e) => { const raw = e.currentTarget.innerText.replace(/[^\d.\-]/g, ""); const n = parseFloat(raw); if (!isNaN(n) && n !== value) onChange(n); else e.currentTarget.innerText = format ? format(value) : value; };
+  const onKeyDown = (e) => { if (e.key === "Enter") { e.preventDefault(); e.currentTarget.blur(); } if (e.key === "Escape") { e.currentTarget.innerText = format ? format(value) : value; e.currentTarget.blur(); } };
+  return (<span className={className} style={style} contentEditable={editable} suppressContentEditableWarning onBlur={onBlur} onKeyDown={onKeyDown}>{format ? format(value) : value}{suffix}</span>);
+}
+function KPIPct({ data, onChange, editable, width, colorClass }) {
+  const compact = width <= 3; const lib = !!data.lowerIsBetter;
+  const statusCls = data.status === "green" ? "status-green" : "status-red";
+  const trendGood = lib ? data.trend < 0 : data.trend > 0;
+  const trendBad = lib ? data.trend > 0 : data.trend < 0;
+  const trendCls = trendGood ? "up" : trendBad ? "down" : "flat";
+  const trendSign = data.trend > 0 ? "↑" : data.trend < 0 ? "↓" : "→";
+  const trendVal = Math.abs(data.trend).toFixed(1);
+  const fillPct = Math.min(100, Math.max(0, data.value));
+  return (<div className={`card kpi ${statusCls} ${colorClass || ""} ${compact ? "compact" : ""}`}>
+    <span className="kpi-status" />
+    <button className="arr-btn" title="เข้าดูรายละเอียด">↗</button>
+    <Editable tag="div" className="kpi-title" value={data.title} onChange={(v) => onChange({ title: v })} editable={editable} />
+    <Editable tag="div" className="kpi-sub" value={data.subtitle} onChange={(v) => onChange({ subtitle: v })} editable={editable} />
+    <div className="kpi-value-row">
+      <EditableNum className={`kpi-value ${statusCls}`} value={data.value} onChange={(v) => onChange({ value: v })} editable={editable} />
+      <span className="kpi-pct-sign">%</span>
+    </div>
+    <div className="kpi-bar"><div className={`kpi-bar-fill ${statusCls}`} style={{ width: `${fillPct}%` }} /></div>
+    <div className="kpi-foot">
+      <span className="kpi-target">เป้า <b><EditableNum value={data.target} onChange={(v) => onChange({ target: v })} editable={editable} />%</b></span>
+      {editable && <button className="kpi-dir-toggle" title={lib ? "ตัวชี้วัด: น้อยกว่าเป้า = ดี" : "ตัวชี้วัด: มากกว่าเป้า = ดี"} onClick={() => onChange({ lowerIsBetter: !lib })}>{lib ? "↓ ดี" : "↑ ดี"}</button>}
+      <span className={`kpi-trend ${trendCls}`}>{trendSign} {trendVal}%</span>
+    </div>
+  </div>);
+}
+function KPI({ data, onChange, editable, width, colorClass }) {
+  const compact = width <= 3; const lib = !!data.lowerIsBetter;
+  const statusCls = data.status === "green" ? "status-green" : "status-red";
+  const trendGood = lib ? data.trend < 0 : data.trend > 0;
+  const trendBad = lib ? data.trend > 0 : data.trend < 0;
+  const trendCls = trendGood ? "up" : trendBad ? "down" : "flat";
+  const trendSign = data.trend > 0 ? "+" : data.trend < 0 ? "−" : "";
+  const trendVal = Math.abs(data.trend);
+  return (<div className={`card kpi ${statusCls} ${colorClass || ""} ${compact ? "compact" : ""}`}>
+    <span className="kpi-status" />
+    <button className="arr-btn" title="เข้าดูรายละเอียด">↗</button>
+    <Editable tag="div" className="kpi-title" value={data.title} onChange={(v) => onChange({ title: v })} editable={editable} />
+    <Editable tag="div" className="kpi-sub" value={data.subtitle} onChange={(v) => onChange({ subtitle: v })} editable={editable} />
+    <div className="kpi-value-row">
+      <EditableNum className="kpi-value" value={data.value} onChange={(v) => onChange({ value: v })} editable={editable} format={(v) => v.toLocaleString("th-TH")} />
+      <Editable tag="span" className="kpi-unit" value={data.unit} onChange={(v) => onChange({ unit: v })} editable={editable} />
+    </div>
+    <div className="kpi-foot">
+      <span className="kpi-target">เป้า <b><EditableNum value={data.target} onChange={(v) => onChange({ target: v })} editable={editable} format={(v) => v.toLocaleString("th-TH")} /></b></span>
+      {editable && <button className="kpi-dir-toggle" title={lib ? "ตัวชี้วัด: น้อยกว่าเป้า = ดี" : "ตัวชี้วัด: มากกว่าเป้า = ดี"} onClick={() => onChange({ lowerIsBetter: !lib })}>{lib ? "↓ ดี" : "↑ ดี"}</button>}
+      <span className={`kpi-trend ${trendCls}`}>{trendSign}{trendVal}</span>
+    </div>
+  </div>);
+}
+function KPIProject({ data, onChange, editable, width, colorClass }) {
+  const compact = width <= 3;
+  const statusCls = data.status === "green" ? "status-green" : "status-red";
+  const fillPct = Math.min(100, Math.max(0, data.percent));
+  const onCardClick = (e) => { if (!editable) return; if (e.target.closest('[contenteditable="true"], button, input, textarea')) return; onChange({ status: data.status === "green" ? "red" : "green" }); };
+  return (<div className={`card kpi kpi-project ${statusCls} ${colorClass || ""} ${compact ? "compact" : ""} ${editable ? "clickable" : ""}`} onClick={onCardClick} title={editable ? "คลิกที่การ์ดเพื่อสลับสี เขียว/แดง" : ""}>
+    <Editable tag="div" className="kp-type" value={data.projectType} onChange={(v) => onChange({ projectType: v })} editable={editable} placeholder="ประเภทโครงการ" />
+    <Editable tag="h3" className="kp-name" value={data.projectName} onChange={(v) => onChange({ projectName: v })} editable={editable} multiline placeholder="ชื่อโครงการ" />
+    <div className="kpi-value-row">
+      <EditableNum className="kpi-value" value={data.percent} onChange={(v) => onChange({ percent: Math.max(0, Math.min(100, v)) })} editable={editable} />
+      <span className="kpi-pct-sign">%</span>
+    </div>
+    <div className="kpi-bar"><div className={`kpi-bar-fill ${statusCls}`} style={{ width: `${fillPct}%` }} /></div>
+  </div>);
+}
+function SectionHead({ data, onChange, editable, num }) {
+  return (<div className="section-head">
+    <span className="num">{String(num).padStart(2, "0")}</span>
+    <Editable tag="h2" className="title" value={data.label} onChange={(v) => onChange({ label: v })} editable={editable} />
+    {(data.eyebrow || editable) && <Editable tag="span" className="eyebrow" value={data.eyebrow} onChange={(v) => onChange({ eyebrow: v })} editable={editable} placeholder="คำอธิบาย" />}
+  </div>);
+}
+function TextBlock({ data, onChange, editable }) {
+  return (<div className="text-block">
+    <Editable tag="h3" value={data.heading} onChange={(v) => onChange({ heading: v })} editable={editable} />
+    <Editable tag="div" className="body" value={data.body} onChange={(v) => onChange({ body: v })} editable={editable} multiline />
+  </div>);
+}
+function ImageSlot({ data, onChange, editable }) {
+  const imgUrl = useImageUrl(data.fileId);
+  const upload = () => pickAndUploadImage(onChange, data);
+  if (imgUrl) return (
+    <div className="img-slot loaded" onClick={editable ? upload : undefined} style={{ cursor: editable ? "pointer" : "default", padding: 0 }}>
+      <img src={imgUrl} alt={data.label} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "inherit", display: "block" }} />
+      {editable && <div className="img-upload-overlay">เปลี่ยนรูป</div>}
+    </div>
+  );
+  return (
+    <div className="img-slot" onClick={editable ? upload : undefined} style={{ cursor: editable ? "pointer" : "default" }}>
+      <div className="img-label" style={{ pointerEvents: "none" }}>
+        {editable ? <span>+ คลิกเพื่ออัปโหลดรูป<br/><small style={{fontWeight:400,fontSize:11}}>{data.label}</small></span> : (data.label || "ช่องใส่รูปภาพ")}
+      </div>
+    </div>
+  );
+}
+function ImageText({ data, onChange, editable }) {
+  const imgUrl = useImageUrl(data.fileId);
+  const upload = () => pickAndUploadImage(onChange, data);
+  return (<div className="img-text">
+    <div className="img-slot loaded" onClick={editable ? upload : undefined} style={{ cursor: editable ? "pointer" : "default", padding: 0, position: "relative" }}>
+      {imgUrl
+        ? <img src={imgUrl} alt={data.label} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+        : <div className="img-label" style={{ pointerEvents: "none" }}>{editable ? "+ คลิกอัปโหลดรูป" : (data.label || "ช่องใส่รูปภาพ")}</div>}
+      {editable && imgUrl && <div className="img-upload-overlay">เปลี่ยนรูป</div>}
+    </div>
+    <div className="it-body">
+      <div className="it-eyebrow">★ ภาพประกอบเดือนนี้</div>
+      <Editable tag="h3" value={data.heading} onChange={(v) => onChange({ heading: v })} editable={editable} />
+      <Editable tag="div" className="body" value={data.body} onChange={(v) => onChange({ body: v })} editable={editable} multiline />
+    </div>
+  </div>);
+}
+function LandscapeImg({ l, i, editable, landscapes, onChange }) {
+  const lUrl = useImageUrl(l.fileId);
+  const removeLandscape = (idx) => { if (landscapes.length <= 1) return; onChange({ landscapes: landscapes.filter((_, ii) => ii !== idx) }); };
+  const uploadL = async () => {
+    const input = document.createElement("input");
+    input.type = "file"; input.accept = "image/*";
+    input.onchange = async () => {
+      const file = input.files[0]; if (!file) return;
+      try {
+        const dataUrl = await compressImage(file);
+        const next = landscapes.slice(); next[i] = { ...next[i], fileId: dataUrl, label: file.name };
+        onChange({ landscapes: next });
+        window.__showToast && window.__showToast("เลือกรูปแล้ว — กด บันทึก เพื่อบันทึกลง Drive ✓");
+      } catch (err) {
+        window.__showToast && window.__showToast("โหลดรูปไม่สำเร็จ: " + err.message);
+      }
+    };
+    input.click();
+  };
+  return (<div className="ps-landscape" key={i} onClick={editable ? uploadL : undefined} style={{ cursor: editable ? "pointer" : "default", padding: 0, position: "relative" }}>
+    {lUrl
+      ? <img src={lUrl} alt={l.label} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "inherit", display: "block" }} />
+      : <div className="img-label" style={{ pointerEvents: "none" }}>{editable ? `+ รูป ${i+1}` : (l.label || `รูป ${i+1}`)}</div>}
+    {editable && lUrl && <div className="img-upload-overlay" style={{ borderRadius: "inherit" }}>เปลี่ยน</div>}
+    {editable && landscapes.length > 1 && <button className="ps-l-remove" onClick={(e) => { e.stopPropagation(); removeLandscape(i); }} title="ลบรูปนี้">×</button>}
+  </div>);
+}
+function PicSpread({ data, onChange, editable }) {
+  const portraitOnLeft = data.portraitSide === "left";
+  const togglePortrait = () => onChange({ portraitSide: portraitOnLeft ? "right" : "left" });
+  const addLandscape = () => { if (data.landscapes.length >= 6) return; onChange({ landscapes: [...data.landscapes, { label: `รูป ${data.landscapes.length + 1}` }] }); };
+  const removeLandscape = (idx) => { if (data.landscapes.length <= 1) return; onChange({ landscapes: data.landscapes.filter((_, i) => i !== idx) }); };
+  const portraitUrl = useImageUrl(data.portraitFileId);
+  const uploadPortrait = () => pickAndUploadImage(onChange, data, "portraitLabel", "portraitFileId");
+  const portrait = (
+    <div className="ps-portrait" onClick={editable ? uploadPortrait : undefined} style={{ cursor: editable ? "pointer" : "default", padding: 0, position: "relative" }}>
+      {portraitUrl
+        ? <img src={portraitUrl} alt={data.portraitLabel} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "inherit", display: "block", minHeight: 340 }} />
+        : <div className="img-label" style={{ pointerEvents: "none" }}>{editable ? "+ คลิกอัปโหลดรูป portrait" : (data.portraitLabel || "ใส่รูป portrait")}</div>}
+      {editable && portraitUrl && <div className="img-upload-overlay">เปลี่ยนรูป</div>}
+    </div>
+  );
+  const body = (<div className="ps-body">
+    <Editable tag="h2" className="ps-heading" value={data.heading} onChange={(v) => onChange({ heading: v })} editable={editable} placeholder="หัวข้อ" />
+    <Editable tag="div" className="ps-text" value={data.body} onChange={(v) => onChange({ body: v })} editable={editable} multiline placeholder="รายละเอียด" />
+  </div>);
+  return (<div className={`pic-spread side-${data.portraitSide}`}>
+    <div className="ps-top">{portraitOnLeft ? portrait : body}{portraitOnLeft ? body : portrait}</div>
+    <div className="ps-landscape-row" data-count={data.landscapes.length}>
+      {data.landscapes.map((l, i) => (
+        <LandscapeImg key={i} l={l} i={i} editable={editable} landscapes={data.landscapes} onChange={onChange} />
+      ))}
+      {editable && data.landscapes.length < 6 && <button className="ps-l-add" onClick={addLandscape} title="เพิ่มรูป landscape">+ รูป</button>}
+    </div>
+    {editable && <div className="ps-controls"><button onClick={togglePortrait} className="ps-side-toggle" title="สลับด้านของ portrait">↔ Portrait อยู่ทาง{portraitOnLeft ? "ซ้าย" : "ขวา"} — คลิกสลับ</button></div>}
+  </div>);
+}
+function TableObj({ data, onChange, editable }) {
+  const updateHeader = (idx, val) => { const headers = data.headers.slice(); headers[idx] = val; onChange({ headers }); };
+  const updateCell = (r, c, val) => { const rows = data.rows.map((row, ri) => { if (ri !== r) return row; const nr = row.slice(); nr[c] = val; return nr; }); onChange({ rows }); };
+  const addRow = () => onChange({ rows: [...data.rows, Array(data.headers.length).fill("—")] });
+  const removeRow = (idx) => { if (data.rows.length <= 1) return; onChange({ rows: data.rows.filter((_, i) => i !== idx) }); };
+  return (<div className="data-table">
+    {(data.title || editable) && <Editable tag="h3" className="dt-title" value={data.title} onChange={(v) => onChange({ title: v })} editable={editable} placeholder="ชื่อตาราง" />}
+    <div className="dt-scroll"><table>
+      <thead><tr>
+        {data.headers.map((h, i) => <th key={i}><Editable tag="span" value={h} onChange={(v) => updateHeader(i, v)} editable={editable} /></th>)}
+        {editable && <th className="dt-actions-col" />}
+      </tr></thead>
+      <tbody>
+        {data.rows.map((row, ri) => { const isTotal = ri === data.rows.length - 1 && data.rows.length > 1;
+          return (<tr key={ri} className={isTotal ? "total-row" : ""}>
+            {row.map((cell, ci) => <td key={ci} className={ci === 0 ? "dt-col-label" : "dt-col-num"}><Editable tag="span" value={cell} onChange={(v) => updateCell(ri, ci, v)} editable={editable} /></td>)}
+            {editable && <td className="dt-actions-col"><button className="dt-row-del" onClick={() => removeRow(ri)} title="ลบแถวนี้">×</button></td>}
+          </tr>);
+        })}
+      </tbody>
+    </table></div>
+    {editable && <button className="dt-add-row" onClick={addRow}>+ เพิ่มแถว</button>}
+  </div>);
+}
+function ImageFull({ data, onChange, editable }) {
+  const imgUrl = useImageUrl(data.fileId);
+  const upload = () => pickAndUploadImage(onChange, data);
+  return (<div className="img-full">
+    <div className="img-full-slot" onClick={editable ? upload : undefined} style={{ cursor: editable ? "pointer" : "default", padding: 0, position: "relative" }}>
+      {imgUrl
+        ? <img src={imgUrl} alt={data.label} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", borderRadius: "inherit" }} />
+        : <div className="img-label" style={{ pointerEvents: "none" }}>{editable ? "+ คลิกอัปโหลดรูป" : (data.label || "ช่องใส่รูปภาพ")}</div>}
+      {editable && imgUrl && <div className="img-upload-overlay">เปลี่ยนรูป</div>}
+    </div>
+    {(data.caption || editable) && <Editable tag="div" className="img-full-caption" value={data.caption || ""} onChange={(v) => onChange({ caption: v })} editable={editable} placeholder="คำบรรยายภาพ (ถ้ามี)" />}
+  </div>);
+}
+function Timeline({ data, onChange, editable }) {
+  const updateRow = (rowId, patch) => { const rows = data.rows.map((r) => (r.id === rowId ? { ...r, ...patch } : r)); onChange({ rows }); };
+  const updateBlock = (rowId, blockId, patch) => { const rows = data.rows.map((r) => { if (r.id !== rowId) return r; const blocks = r.blocks.map((b) => (b.id === blockId ? { ...b, ...patch } : b)); return { ...r, blocks }; }); onChange({ rows }); };
+  const autoStatus = (progress) => (progress >= 80 ? "green" : "red");
+  const updateBlockProgress = (rowId, blockId, progress) => { const p = Math.max(0, Math.min(100, progress)); updateBlock(rowId, blockId, { progress: p, status: autoStatus(p) }); };
+  const addBlockRight = (rowId) => { const rows = data.rows.map((r) => { if (r.id !== rowId) return r; return { ...r, blocks: [...r.blocks, { id: window.__uid("blk"), title: "ระยะใหม่", period: "—", progress: 0, status: "red" }] }; }); onChange({ rows }); };
+  const addRowBelow = () => { onChange({ rows: [...data.rows, { id: window.__uid("row"), label: "แทร็กใหม่", meta: "", blocks: [{ id: window.__uid("blk"), title: "ระยะที่ 1", period: "—", progress: 0, status: "red" }] }] }); };
+  const delBlock = (rowId, blockId) => { const rows = data.rows.map((r) => { if (r.id !== rowId) return r; const blocks = r.blocks.filter((b) => b.id !== blockId); return { ...r, blocks }; }); onChange({ rows }); };
+  const delRow = (rowId) => { if (!confirm("ลบแทร็กนี้?")) return; onChange({ rows: data.rows.filter((r) => r.id !== rowId) }); };
+  const toggleStatus = (rowId, blockId) => { const row = data.rows.find((r) => r.id === rowId); const blk = row && row.blocks.find((b) => b.id === blockId); if (!blk) return; updateBlock(rowId, blockId, { status: blk.status === "green" ? "red" : "green" }); };
+  return (<div className="timeline">
+    <Editable tag="h3" className="timeline-title" value={data.title} onChange={(v) => onChange({ title: v })} editable={editable} />
+    <div className="tl-rows">
+      {data.rows.map((row) => (<div key={row.id} className={`tl-row ${editable ? "editable" : ""}`}>
+        <div className="tl-row-label">
+          <Editable tag="div" className="tl-row-name" value={row.label} onChange={(v) => updateRow(row.id, { label: v })} editable={editable} />
+          {(row.meta || editable) && <Editable tag="div" className="tl-row-meta" value={row.meta || ""} onChange={(v) => updateRow(row.id, { meta: v })} editable={editable} placeholder="หมายเหตุ" />}
+        </div>
+        <div className="tl-blocks">
+          {row.blocks.map((b, i) => (<div className="tl-block-wrap" key={b.id}>
+            {i > 0 && <div className="tl-connector" />}
+            <div className={`tl-block ${b.status}`}>
+              <Editable tag="div" className="tl-block-title" value={b.title} onChange={(v) => updateBlock(row.id, b.id, { title: v })} editable={editable} />
+              <Editable tag="div" className="tl-block-period" value={b.period} onChange={(v) => updateBlock(row.id, b.id, { period: v })} editable={editable} />
+              <div className="tl-block-prog">
+                <div className="tl-block-progbar"><div style={{ width: `${Math.max(0, Math.min(100, b.progress))}%` }} /></div>
+                <span className="tl-block-pct"><EditableNum value={b.progress} onChange={(v) => updateBlockProgress(row.id, b.id, v)} editable={editable} />%</span>
+              </div>
+              {editable && <div className="tl-block-actions">
+                <button title={b.status === "green" ? "เปลี่ยนเป็นล่าช้า" : "เปลี่ยนเป็นตามแผน"} onClick={() => toggleStatus(row.id, b.id)}>{b.status === "green" ? "✓" : "!"}</button>
+                <button title="ลบบลอค" onClick={() => delBlock(row.id, b.id)}>×</button>
+              </div>}
+            </div>
+          </div>))}
+          {editable && <button className="tl-add right" onClick={() => addBlockRight(row.id)} title="เพิ่มบลอคถัดไป">+ ทางขวา</button>}
+        </div>
+        {editable && <button className="tl-row-del" onClick={() => delRow(row.id)} title="ลบแทร็ก">×</button>}
+      </div>))}
+    </div>
+    {editable && <button className="tl-add down" onClick={addRowBelow}>+ เพิ่มแทร็กด้านล่าง</button>}
+  </div>);
+}
+function ChartObj({ data, onChange, editable }) {
+  return (<div className="chart-wrap">
+    <div className="chart-head">
+      <div>
+        <Editable tag="h3" className="ch-title" value={data.title} onChange={(v) => onChange({ title: v })} editable={editable} />
+        <Editable tag="div" className="ch-sub" value={data.subtitle} onChange={(v) => onChange({ subtitle: v })} editable={editable} />
+      </div>
+      <div className="chart-legend">
+        <span className="lg-pill"><span className="lg-mark" style={{ background: "var(--c-sage-d)" }} />{data.barLabel}</span>
+        <span className="lg-pill"><span className="lg-mark dot" style={{ background: "var(--c-peach-d)" }} />{data.lineLabel}</span>
+      </div>
+    </div>
+    <Chart months={data.months} bars={data.bars} line={data.line} />
+  </div>);
+}
+function renderObject(obj, ctx) {
+  const { onChange, editable, sectionIndex, colorClass, divisionId } = ctx;
+  const props = { data: obj.data, onChange, editable, width: obj.width, colorClass, divisionId };
+  switch (obj.type) {
+    case "kpi-pct": return <KPIPct {...props} />;
+    case "kpi": return <KPI {...props} />;
+    case "kpi-project": return <KPIProject {...props} />;
+    case "section": return <SectionHead data={obj.data} onChange={onChange} editable={editable} num={sectionIndex} />;
+    case "text": return <TextBlock {...props} />;
+    case "image": return <ImageSlot {...props} />;
+    case "image-text": return <ImageText {...props} />;
+    case "image-full": return <ImageFull {...props} />;
+    case "pic-spread": return <PicSpread {...props} />;
+    case "table": return <TableObj {...props} />;
+    case "timeline": return <Timeline {...props} />;
+    case "chart": return <ChartObj {...props} />;
+    default: return <div>Unknown: {obj.type}</div>;
+  }
+}
+window.renderObject = renderObject;
+  </script>
+
+  <!-- ─────── canvas.jsx ─────── -->
+  <script type="text/babel" data-presets="react">
+const { useState: useStateC } = React;
+const PASTEL_ROTATION = ["c-sage", "c-peach", "c-butter", "c-pink", "c-lavender", "c-mint", "c-sky"];
+function assignColors(objects) {
+  const out = {}; let kpiIdx = 0;
+  for (const obj of objects) {
+    if (obj.type === "section") { kpiIdx = 0; out[obj.id] = ""; continue; }
+    if (obj.type === "kpi-project") { out[obj.id] = ""; kpiIdx++; }
+    else if (obj.type === "kpi-pct" || obj.type === "kpi") {
+      const isRed = obj.data && obj.data.status === "red";
+      if (isRed) out[obj.id] = (kpiIdx % 2 === 0) ? "c-coral" : "c-pink";
+      else if (obj.data && obj.data.accent === "ink") out[obj.id] = "c-ink";
+      else out[obj.id] = PASTEL_ROTATION[kpiIdx % PASTEL_ROTATION.length];
+      kpiIdx++;
+    } else if (obj.type === "image") { out[obj.id] = PASTEL_ROTATION[kpiIdx % PASTEL_ROTATION.length]; kpiIdx++; }
+    else out[obj.id] = "";
+  }
+  return out;
+}
+function Canvas({ subTab, mainTab, editable, dispatch, divisionId }) {
+  const [dragId, setDragId] = useStateC(null);
+  const [overId, setOverId] = useStateC(null);
+  if (!subTab) return null;
+  let sectionCount = 0;
+  const colors = assignColors(subTab.objects);
+  const onDragStart = (id) => (e) => { setDragId(id); e.dataTransfer.effectAllowed = "move"; try { e.dataTransfer.setData("text/plain", id); } catch (_) {} };
+  const onDragOver = (id) => (e) => { e.preventDefault(); if (id !== overId) setOverId(id); };
+  const onDrop = (id) => (e) => { e.preventDefault(); if (!dragId || dragId === id) { setDragId(null); setOverId(null); return; } dispatch({ type: "MOVE_OBJECT", from: dragId, to: id }); setDragId(null); setOverId(null); };
+  const onDragEnd = () => { setDragId(null); setOverId(null); };
+  const updateObj = (objId, patch) => dispatch({ type: "UPDATE_OBJECT", id: objId, patch });
+  const updateData = (objId, dataPatch) => dispatch({ type: "UPDATE_OBJECT_DATA", id: objId, patch: dataPatch });
+  const removeObj = (objId) => dispatch({ type: "REMOVE_OBJECT", id: objId });
+  const hideObj = (objId, hidden) => updateObj(objId, { hidden });
+  const cycleWidth = (objId) => {
+    const obj = subTab.objects.find((o) => o.id === objId); if (!obj) return;
+    const opts = obj.type === "section" || obj.type === "chart" || obj.type === "timeline" || obj.type === "image-text" || obj.type === "image-full" || obj.type === "pic-spread" || obj.type === "table"
+      ? [12]
+      : obj.type === "text" ? [6, 8, 12]
+        : obj.type === "image" ? [4, 6, 8, 12]
+          : obj.type === "kpi-project" ? [4, 6, 12]
+            : [3, 4, 6, 8, 12];
+    const i = opts.indexOf(obj.width); const next = opts[(i + 1) % opts.length];
+    updateObj(objId, { width: next });
+  };
+  return (<div className={`canvas ${editable ? "edit" : ""}`}>
+    <div className="grid">
+      {subTab.objects.map((obj) => {
+        if (!editable && obj.hidden) return null;
+        if (obj.type === "section") sectionCount++;
+        const isDragging = dragId === obj.id;
+        const isOver = overId === obj.id && dragId && dragId !== obj.id;
+        const span = obj.type === "section" ? 12 : obj.width;
+        const colorClass = colors[obj.id] || "";
+        return (<div key={obj.id} className={["grid-item", isDragging ? "dragging" : "", isOver ? "drag-over" : "", obj.hidden ? "hidden-obj" : ""].join(" ")} style={{ gridColumn: `span ${span}` }} draggable={editable} onDragStart={editable ? onDragStart(obj.id) : undefined} onDragOver={editable ? onDragOver(obj.id) : undefined} onDrop={editable ? onDrop(obj.id) : undefined} onDragEnd={onDragEnd}>
+          <div className="obj-inner">
+            {renderObject(obj, { onChange: (p) => updateData(obj.id, p), editable, sectionIndex: sectionCount, colorClass, divisionId })}
+            {editable && (<div className="obj-handle">
+              <button data-action="grab" title="ลากเพื่อจัดลำดับ">⠿</button>
+              {obj.type !== "section" && <button onClick={() => cycleWidth(obj.id)} title="ปรับขนาด">↔</button>}
+              <button onClick={() => hideObj(obj.id, !obj.hidden)} title={obj.hidden ? "แสดง" : "ซ่อน"}>{obj.hidden ? "◐" : "◉"}</button>
+              <button onClick={() => removeObj(obj.id)} title="ลบ">×</button>
+            </div>)}
+          </div>
+        </div>);
+      })}
+    </div>
+    {subTab.objects.length === 0 && (<div style={{ padding: 80, textAlign: "center", color: "var(--ink-soft)" }}>
+      <div style={{ fontFamily: "var(--ff-display)", fontWeight: 700, fontSize: 28, marginBottom: 12, color: "var(--ink)" }}>ยังไม่มี object ในแท็บนี้</div>
+      <div style={{ fontSize: 16 }}>คลิก toolbar ด้านบนเพื่อเริ่มเพิ่มเนื้อหา</div>
+    </div>)}
+  </div>);
+}
+window.Canvas = Canvas;
+  </script>
+
+  <!-- ─────── tabs.jsx ─────── -->
+  <script type="text/babel" data-presets="react">
+const { useState: useStateT, useRef: useRefT } = React;
+function MainTabs({ tabs, activeId, activeDivision, onSelect }) {
+  return (<div className="main-tabs">
+    {tabs.map((t, idx) => {
+      const isLocked = activeDivision !== null && idx !== activeDivision.tabIdx;
+      const isEditActive = activeDivision !== null && idx === activeDivision.tabIdx;
+      return (<button key={t.id}
+        className={`main-tab ${t.id === activeId ? "active" : ""} ${isLocked ? "locked" : ""}`}
+        onClick={() => onSelect(t.id)}
+        title={isLocked ? `ล็อก — กำลังแก้ไข ${activeDivision.short} เท่านั้น` : ""}
+      >
+        <span className="mt-short">{t.short}{isEditActive ? " ✎" : ""}</span>
+        <span className="mt-full">{t.full}</span>
+      </button>);
+    })}
+  </div>);
+}
+function SubTabs({ subTabs, activeId, onSelect, dispatch, editable }) {
+  const [dragId, setDragId] = useStateT(null);
+  const [overId, setOverId] = useStateT(null);
+  const handleRename = (id, name) => dispatch({ type: "RENAME_SUBTAB", id, name });
+  const handleAdd = () => dispatch({ type: "ADD_SUBTAB" });
+  const handleDelete = (id) => { if (subTabs.length <= 1) return; if (!confirm("ลบ sub-tab นี้?")) return; dispatch({ type: "DELETE_SUBTAB", id }); };
+  const onDragStart = (id) => (e) => { setDragId(id); e.dataTransfer.effectAllowed = "move"; try { e.dataTransfer.setData("text/plain", id); } catch (_) {} };
+  const onDragOver = (id) => (e) => { e.preventDefault(); if (id !== overId) setOverId(id); };
+  const onDrop = (id) => (e) => { e.preventDefault(); if (!dragId || dragId === id) { setDragId(null); setOverId(null); return; } dispatch({ type: "MOVE_SUBTAB", from: dragId, to: id }); setDragId(null); setOverId(null); };
+  const onDragEnd = () => { setDragId(null); setOverId(null); };
+  return (<div className="sub-tabs-wrap">
+    {subTabs.map((st) => {
+      const isActive = st.id === activeId; const isDragging = dragId === st.id;
+      const isOver = overId === st.id && dragId && dragId !== st.id;
+      return (<div key={st.id} className={`sub-tab ${isActive ? "active" : ""} ${isDragging ? "dragging" : ""} ${isOver ? "drag-over" : ""}`} onClick={(e) => { if (e.target.getAttribute("contenteditable") === "true") return; onSelect(st.id); }} draggable={editable && !isDragging} onDragStart={editable ? onDragStart(st.id) : undefined} onDragOver={editable ? onDragOver(st.id) : undefined} onDrop={editable ? onDrop(st.id) : undefined} onDragEnd={onDragEnd}>
+        {editable && <span className="drag-handle">⠿</span>}
+        <SubTabName name={st.name} editable={editable} onCommit={(v) => handleRename(st.id, v)} />
+        {editable && subTabs.length > 1 && <button className="st-close" onClick={(e) => { e.stopPropagation(); handleDelete(st.id); }} title="ลบ sub-tab">×</button>}
+      </div>);
+    })}
+    {editable && <button className="add-sub" onClick={handleAdd}><span style={{ fontSize: 18, lineHeight: 1 }}>+</span>เพิ่ม sub-tab</button>}
+  </div>);
+}
+function SubTabName({ name, editable, onCommit }) {
+  const ref = useRefT(null);
+  const onDouble = (e) => { if (!editable) return; e.stopPropagation(); e.currentTarget.setAttribute("contenteditable", "true"); e.currentTarget.focus(); document.execCommand("selectAll", false); };
+  const onBlur = (e) => { const v = e.currentTarget.innerText.trim() || name; e.currentTarget.setAttribute("contenteditable", "false"); if (v !== name) onCommit(v); else e.currentTarget.innerText = name; };
+  const onKey = (e) => { if (e.key === "Enter") { e.preventDefault(); e.currentTarget.blur(); } if (e.key === "Escape") { e.currentTarget.innerText = name; e.currentTarget.blur(); } };
+  return (<span ref={ref} className="st-name" onDoubleClick={onDouble} onBlur={onBlur} onKeyDown={onKey} suppressContentEditableWarning title={editable ? "ดับเบิ้ลคลิกเพื่อแก้ชื่อ" : ""}>{name}</span>);
+}
+window.MainTabs = MainTabs;
+window.SubTabs = SubTabs;
+  </script>
+
+  <!-- ─────── toolbar.jsx ─────── -->
+  <script type="text/babel" data-presets="react">
+const TOOLBAR_ITEMS = [
+  { type: "kpi-pct", label: "KPI %", ico: "%", factory: () => ({ type: "kpi-pct", hidden: false, width: 3, data: { title: "ตัวชี้วัดใหม่", subtitle: "คำอธิบายสั้น", value: 80, target: 85, trend: 0, status: "green" } }) },
+  { type: "kpi", label: "KPI ตัวเลข", ico: "#", factory: () => ({ type: "kpi", hidden: false, width: 3, data: { title: "ตัวชี้วัดใหม่", subtitle: "คำอธิบายสั้น", value: 100, unit: "หน่วย", target: 100, trend: 0, status: "green" } }) },
+  { type: "kpi-project", label: "KPI โครงการ", ico: "◆", factory: () => ({ type: "kpi-project", hidden: false, width: 4, data: { projectType: "ประเภทโครงการ", projectName: "ชื่อโครงการ", percent: 50, status: "green" } }) },
+  { type: "section", label: "หัวข้อ", ico: "§", factory: () => ({ type: "section", hidden: false, width: 12, data: { label: "หัวข้อใหม่", eyebrow: "" } }) },
+  { type: "timeline", label: "Timeline", ico: "▤", factory: () => ({ type: "timeline", hidden: false, width: 12, data: { title: "ตารางความก้าวหน้า", rows: [{ id: window.__uid("row"), label: "แทร็กที่ 1", meta: "", blocks: [{ id: window.__uid("blk"), title: "ระยะที่ 1", period: "ม.ค.-มี.ค. 69", progress: 100, status: "green" }, { id: window.__uid("blk"), title: "ระยะที่ 2", period: "เม.ย.-พ.ค. 69", progress: 60, status: "red" }] }] } }) },
+  { type: "chart", label: "กราฟ", ico: "▮", factory: () => ({ type: "chart", hidden: false, width: 12, data: { title: "ชื่อกราฟ", subtitle: "คำอธิบาย", months: ["ต.ค.", "พ.ย.", "ธ.ค.", "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค."], bars: [80, 88, 95, 82, 91, 96, 102, 98], line: [90, 90, 90, 90, 90, 90, 90, 90], barLabel: "ผลงานจริง", lineLabel: "เป้าหมาย" } }) },
+  { type: "text", label: "ข้อความ", ico: "T", factory: () => ({ type: "text", hidden: false, width: 12, data: { heading: "หัวข้อย่อย", body: "พิมพ์ข้อความที่นี่" } }) },
+  { type: "image", label: "รูปภาพ", ico: "▢", factory: () => ({ type: "image", hidden: false, width: 6, data: { label: "ใส่รูปประกอบที่นี่" } }) },
+  { type: "image-text", label: "รูป + ข้อความ", ico: "◧", factory: () => ({ type: "image-text", hidden: false, width: 12, data: { label: "ใส่รูปประกอบที่นี่", heading: "หัวข้อเรื่อง", body: "เล่าเรื่องสั้นๆ ประกอบรูปภาพ" } }) },
+  { type: "pic-spread", label: "รูป + ข้อความชุดใหญ่", ico: "▥", factory: () => ({ type: "pic-spread", hidden: false, width: 12, data: { heading: "หัวข้อ", body: "รายละเอียดเนื้อหา", portraitSide: "left", portraitLabel: "ใส่รูป portrait", landscapes: [{ label: "รูป 1" }, { label: "รูป 2" }, { label: "รูป 3" }, { label: "รูป 4" }] } }) },
+  { type: "image-full", label: "รูปเต็มสไลด์", ico: "◼", factory: () => ({ type: "image-full", hidden: false, width: 12, data: { label: "ใส่รูปเต็มสไลด์", caption: "" } }) },
+  { type: "table", label: "ตาราง", ico: "▦", factory: () => ({ type: "table", hidden: false, width: 12, data: { title: "ชื่อตาราง", headers: ["คอลัมน์ 1", "คอลัมน์ 2", "คอลัมน์ 3"], rows: [["—", "—", "—"], ["—", "—", "—"]] } }) },
+];
+function Toolbar({ dispatch, editable, activeDivision, onToggleEdit }) {
+  const add = (factory) => { const o = factory(); o.id = window.__uid("o"); dispatch({ type: "ADD_OBJECT", obj: o }); };
+  return (<div className="toolbar">
+    <span className="toolbar-label">เพิ่ม</span>
+    {TOOLBAR_ITEMS.map((it) => (<button key={it.type} className="tb-btn" onClick={() => add(it.factory)} disabled={!editable} style={!editable ? { opacity: 0.4, cursor: "not-allowed" } : {}}>
+      <span className="ico" style={{ fontFamily: "var(--ff-display)", fontSize: 18, fontWeight: 600 }}>{it.ico}</span>{it.label}
+    </button>))}
+    <div className="toolbar-spacer" />
+    {activeDivision && (
+      <span className="div-badge"><span className="db-dot" />{activeDivision.short} — โหมดแก้ไข</span>
+    )}
+    <label className="toolbar-toggle">
+      <input type="checkbox" checked={!!activeDivision} onChange={(e) => onToggleEdit(e.target.checked)} />
+      {activeDivision ? "ปิดแก้ไข" : "โหมดแก้ไข"}
+    </label>
+  </div>);
+}
+window.Toolbar = Toolbar;
+  </script>
+
+  <!-- ─────── presentation.jsx ─────── -->
+  <script type="text/babel" data-presets="react">
+const { useState: useStateP, useEffect: useEffectP, useRef: useRefP } = React;
+function PresentationPicker({ state, onStart, onClose }) {
+  const [picked, setPicked] = useStateP([]);
+  const toggle = (mainId, subId) => { const key = `${mainId}/${subId}`; const exists = picked.find((p) => p.key === key); if (exists) setPicked(picked.filter((p) => p.key !== key)); else setPicked([...picked, { key, mainTabId: mainId, subTabId: subId }]); };
+  const move = (from, to) => { if (from === to) return; const arr = picked.slice(); const [it] = arr.splice(from, 1); arr.splice(to, 0, it); setPicked(arr); };
+  const [dragIdx, setDragIdx] = useStateP(null);
+  const isPicked = (mid, sid) => picked.some((p) => p.key === `${mid}/${sid}`);
+  const selectAll = () => { const all = []; state.mainTabs.forEach((mt) => mt.subTabs.forEach((st) => all.push({ key: `${mt.id}/${st.id}`, mainTabId: mt.id, subTabId: st.id }))); setPicked(all); };
+  return (<div className="present-overlay">
+    <div className="present-bar">
+      <div className="left"><span className="pb-eyebrow">โหมดนำเสนอ</span><span className="pb-title">เลือกลำดับการนำเสนอ</span></div>
+      <div className="right">
+        <button className="p-btn" onClick={selectAll}>เลือกทั้งหมด</button>
+        <button className="p-btn" onClick={() => setPicked([])}>ล้าง</button>
+        <button className="p-btn" onClick={onClose}>ยกเลิก</button>
+        <button className="p-btn primary" disabled={picked.length === 0} style={picked.length === 0 ? { opacity: 0.5, cursor: "not-allowed" } : {}} onClick={() => picked.length && onStart(picked)}>เริ่มนำเสนอ ▶</button>
+      </div>
+    </div>
+    <div className="present-picker">
+      <div className="pp-left">
+        <h2>เลือก sub-tab ที่จะนำเสนอ</h2>
+        <p className="pp-intro">คลิกเพื่อเลือก/ตัดออก แล้วลำดับการเล่นจะปรากฏที่แผงด้านขวา</p>
+        {state.mainTabs.map((mt) => (<div className="pp-section" key={mt.id}>
+          <h3>{mt.short}<span className="pp-full">{mt.full}</span></h3>
+          <div className="pp-chips">
+            {mt.subTabs.map((st) => (<button key={st.id} className={`pp-chip ${isPicked(mt.id, st.id) ? "selected" : ""}`} onClick={() => toggle(mt.id, st.id)}>
+              <span className="pp-tick">{isPicked(mt.id, st.id) ? "✓" : "+"}</span>{st.name}
+            </button>))}
+          </div>
+        </div>))}
+      </div>
+      <div className="pp-right">
+        <h3>ลำดับนำเสนอ<span>{picked.length} หน้า</span></h3>
+        <div className="pp-list">
+          {picked.length === 0 ? (<div className="pp-empty">ยังไม่มี sub-tab ที่เลือก<br />— เลือกจากด้านซ้าย —</div>) : picked.map((p, idx) => {
+            const mt = state.mainTabs.find((m) => m.id === p.mainTabId);
+            const st = mt && mt.subTabs.find((s) => s.id === p.subTabId);
+            if (!mt || !st) return null;
+            return (<div key={p.key} className={`pl-item ${dragIdx === idx ? "dragging" : ""}`} draggable onDragStart={(e) => { setDragIdx(idx); e.dataTransfer.effectAllowed = "move"; }} onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); if (dragIdx !== null) move(dragIdx, idx); setDragIdx(null); }} onDragEnd={() => setDragIdx(null)}>
+              <span className="pl-num">{String(idx + 1).padStart(2, "0")}</span>
+              <div className="pl-meta"><div className="pl-mt">{mt.short}</div><div className="pl-name">{st.name}</div></div>
+              <span className="pl-grab">⠿</span>
+              <button className="pl-remove" onClick={() => setPicked(picked.filter((x) => x.key !== p.key))} title="เอาออก">×</button>
+            </div>);
+          })}
+        </div>
+      </div>
+    </div>
+  </div>);
+}
+function PresentationView({ state, playlist, onClose }) {
+  const [idx, setIdx] = useStateP(0);
+  const [chromeVisible, setChromeVisible] = useStateP(true);
+  const hideTimerRef = useRefP(null);
+  useEffectP(() => {
+    const el = document.documentElement;
+    const req = el.requestFullscreen || el.webkitRequestFullscreen;
+    if (req && !document.fullscreenElement) { try { req.call(el); } catch (_) {} }
+    const onFsChange = () => { if (!document.fullscreenElement && !document.webkitFullscreenElement) onClose(); };
+    document.addEventListener("fullscreenchange", onFsChange);
+    document.addEventListener("webkitfullscreenchange", onFsChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", onFsChange);
+      document.removeEventListener("webkitfullscreenchange", onFsChange);
+      if (document.fullscreenElement) { try { document.exitFullscreen(); } catch (_) {} }
+    };
+  }, []);
+  useEffectP(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") onClose();
+      else if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") { e.preventDefault(); setIdx((i) => Math.min(i + 1, playlist.length - 1)); }
+      else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); setIdx((i) => Math.max(i - 1, 0)); }
+      else if (e.key === "Home") { e.preventDefault(); setIdx(0); }
+      else if (e.key === "End") { e.preventDefault(); setIdx(playlist.length - 1); }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [playlist.length, onClose]);
+  useEffectP(() => {
+    const onMove = () => { setChromeVisible(true); if (hideTimerRef.current) clearTimeout(hideTimerRef.current); hideTimerRef.current = setTimeout(() => setChromeVisible(false), 2500); };
+    onMove();
+    window.addEventListener("mousemove", onMove);
+    return () => { window.removeEventListener("mousemove", onMove); if (hideTimerRef.current) clearTimeout(hideTimerRef.current); };
+  }, []);
+  if (playlist.length === 0) return null;
+  const cur = playlist[idx];
+  const mt = state.mainTabs.find((m) => m.id === cur.mainTabId);
+  const st = mt && mt.subTabs.find((s) => s.id === cur.subTabId);
+  if (!mt || !st) return null;
+  let sectionCount = 0;
+  return (<div className={`present-overlay fullscreen ${chromeVisible ? "chrome-on" : "chrome-off"}`}>
+    <div className="present-topbar">
+      <div className="ptb-left"><span className="ptb-mt">{mt.short}</span><span className="ptb-sep">·</span><span className="ptb-name">{st.name}</span></div>
+      <div className="ptb-right">
+        <button className="p-btn" onClick={() => setIdx(Math.max(0, idx - 1))} disabled={idx === 0} title="ก่อนหน้า (←)">◀</button>
+        <span className="ptb-count">{idx + 1} / {playlist.length}</span>
+        <button className="p-btn" onClick={() => setIdx(Math.min(playlist.length - 1, idx + 1))} disabled={idx === playlist.length - 1} title="ถัดไป (→/Space)">▶</button>
+        <button className="p-btn primary" onClick={onClose} title="ปิด (Esc)">× ปิด</button>
+      </div>
+    </div>
+    <div className="present-stage full">
+      <div className="present-stage-inner">
+        <div className="grid">
+          {st.objects.map((obj) => {
+            if (obj.hidden) return null;
+            if (obj.type === "section") sectionCount++;
+            const span = obj.type === "section" ? 12 : obj.width;
+            return (<div key={obj.id} className="grid-item" style={{ gridColumn: `span ${span}` }}>
+              <div className="obj-inner">{renderObject(obj, { onChange: () => {}, editable: false, sectionIndex: sectionCount })}</div>
+            </div>);
+          })}
+        </div>
+      </div>
+    </div>
+    <div className="present-progress">
+      <div className="pp-track">
+        {playlist.map((p, i) => {
+          const m = state.mainTabs.find((x) => x.id === p.mainTabId);
+          const s = m && m.subTabs.find((x) => x.id === p.subTabId);
+          const tip = m && s ? `${i + 1}. ${m.short} · ${s.name}` : `${i + 1}`;
+          return (<button key={p.key} className={`pp-dot ${i === idx ? "active" : ""} ${i < idx ? "done" : ""}`} onClick={() => setIdx(i)} title={tip} aria-label={tip} />);
+        })}
+      </div>
+      <div className="pp-label">{idx + 1} / {playlist.length}</div>
+    </div>
+  </div>);
+}
+window.PresentationPicker = PresentationPicker;
+window.PresentationView = PresentationView;
+  </script>
+
+  <!-- ─────── app.jsx ─────── -->
+  <script type="text/babel" data-presets="react">
+const { useReducer, useState: useStateA, useEffect: useEffectA } = React;
+const STORAGE_KEY = "mrd-state-v3";
+const VERSIONS_KEY = "mrd-versions-v2";
+const ADMIN_PASSWORD_HASH = "MTIzNDU2"; // btoa("123456")
+const DIVISIONS = [
+  { id: "kps", short: "กปส-พ.", full: "กองประเมินผลกระทบสิ่งแวดล้อม",      tabIdx: 0 },
+  { id: "kts", short: "กตส-พ.", full: "กองตรวจติดตามคุณภาพสิ่งแวดล้อม",    tabIdx: 1 },
+  { id: "kss", short: "กสส-พ.", full: "กองส่งเสริมคุณภาพสิ่งแวดล้อม",      tabIdx: 2 },
+  { id: "kbr", short: "กบร-พ.", full: "กองบริหารจัดการก๊าซเรือนกระจก",     tabIdx: 3 },
+  { id: "asc", short: "อสค.",   full: "ส่วนกลาง — สำนักอำนวยการ",           tabIdx: 4 },
+];
+function deepClone(x) { return JSON.parse(JSON.stringify(x)); }
+function makeInitial() {
+  const seed = window.__seedData; const data = deepClone(seed);
+  const activeSubByMain = {};
+  data.mainTabs.forEach((mt) => { activeSubByMain[mt.id] = mt.subTabs[0]?.id; });
+  return { meta: data.meta, mainTabs: data.mainTabs, activeMainTab: data.mainTabs[0].id, activeSubByMain };
+}
+function reducer(state, action) {
+  switch (action.type) {
+    case "LOAD_STATE": return action.state;
+    case "SET_DIVISION_TAB": {
+      const mainTabs = state.mainTabs.map((mt, i) => {
+        if (i !== action.tabIdx) return mt;
+        const merged = deepClone(action.tab); merged.id = mt.id; return merged;
+      });
+      const activeSubByMain = { ...state.activeSubByMain };
+      const mt = mainTabs[action.tabIdx];
+      if (mt && !activeSubByMain[mt.id]) activeSubByMain[mt.id] = mt.subTabs?.[0]?.id;
+      return { ...state, mainTabs, activeSubByMain };
+    }
+    case "SET_MAIN_TAB": return { ...state, activeMainTab: action.id };
+    case "SET_SUB_TAB": { const activeSubByMain = { ...state.activeSubByMain, [state.activeMainTab]: action.id }; return { ...state, activeSubByMain }; }
+    case "ADD_SUBTAB": { const id = window.__uid("st"); const newSt = { id, name: "หน้าใหม่", objects: [] }; const mainTabs = state.mainTabs.map((mt) => mt.id === state.activeMainTab ? { ...mt, subTabs: [...mt.subTabs, newSt] } : mt); const activeSubByMain = { ...state.activeSubByMain, [state.activeMainTab]: id }; return { ...state, mainTabs, activeSubByMain }; }
+    case "RENAME_SUBTAB": { const mainTabs = state.mainTabs.map((mt) => mt.id !== state.activeMainTab ? mt : { ...mt, subTabs: mt.subTabs.map((st) => st.id === action.id ? { ...st, name: action.name } : st) }); return { ...state, mainTabs }; }
+    case "DELETE_SUBTAB": { const mainTabs = state.mainTabs.map((mt) => mt.id !== state.activeMainTab ? mt : { ...mt, subTabs: mt.subTabs.filter((st) => st.id !== action.id) }); const cur = mainTabs.find((mt) => mt.id === state.activeMainTab); const activeSubByMain = { ...state.activeSubByMain }; if (activeSubByMain[state.activeMainTab] === action.id) activeSubByMain[state.activeMainTab] = cur.subTabs[0]?.id; return { ...state, mainTabs, activeSubByMain }; }
+    case "MOVE_SUBTAB": { const mainTabs = state.mainTabs.map((mt) => { if (mt.id !== state.activeMainTab) return mt; const arr = mt.subTabs.slice(); const fromIdx = arr.findIndex((s) => s.id === action.from); const toIdx = arr.findIndex((s) => s.id === action.to); if (fromIdx < 0 || toIdx < 0) return mt; const [it] = arr.splice(fromIdx, 1); arr.splice(toIdx, 0, it); return { ...mt, subTabs: arr }; }); return { ...state, mainTabs }; }
+    case "ADD_OBJECT": { const mainTabs = state.mainTabs.map((mt) => { if (mt.id !== state.activeMainTab) return mt; return { ...mt, subTabs: mt.subTabs.map((st) => { if (st.id !== state.activeSubByMain[state.activeMainTab]) return st; return { ...st, objects: [...st.objects, action.obj] }; }) }; }); return { ...state, mainTabs }; }
+    case "REMOVE_OBJECT": { const mainTabs = state.mainTabs.map((mt) => ({ ...mt, subTabs: mt.subTabs.map((st) => ({ ...st, objects: st.objects.filter((o) => o.id !== action.id) })) })); return { ...state, mainTabs }; }
+    case "UPDATE_OBJECT": { const mainTabs = state.mainTabs.map((mt) => ({ ...mt, subTabs: mt.subTabs.map((st) => ({ ...st, objects: st.objects.map((o) => o.id === action.id ? { ...o, ...action.patch } : o) })) })); return { ...state, mainTabs }; }
+    case "UPDATE_OBJECT_DATA": {
+      let foundType = null, foundData = null;
+      state.mainTabs.forEach((mt) => mt.subTabs.forEach((st) => st.objects.forEach((o) => { if (o.id === action.id) { foundType = o.type; foundData = o.data; } })));
+      let patch = action.patch;
+      if ((foundType === "kpi-pct" || foundType === "kpi") && (patch.value !== undefined || patch.target !== undefined || patch.lowerIsBetter !== undefined)) {
+        const v = patch.value !== undefined ? patch.value : foundData.value;
+        const t = patch.target !== undefined ? patch.target : foundData.target;
+        const lib = patch.lowerIsBetter !== undefined ? patch.lowerIsBetter : foundData.lowerIsBetter;
+        patch = { ...patch, status: (lib ? v <= t : v >= t) ? "green" : "red" };
+      }
+      const mainTabs = state.mainTabs.map((mt) => ({ ...mt, subTabs: mt.subTabs.map((st) => ({ ...st, objects: st.objects.map((o) => o.id === action.id ? { ...o, data: { ...o.data, ...patch } } : o) })) }));
+      return { ...state, mainTabs };
+    }
+    case "MOVE_OBJECT": { const mainTabs = state.mainTabs.map((mt) => { if (mt.id !== state.activeMainTab) return mt; return { ...mt, subTabs: mt.subTabs.map((st) => { if (st.id !== state.activeSubByMain[state.activeMainTab]) return st; const arr = st.objects.slice(); const fromIdx = arr.findIndex((o) => o.id === action.from); const toIdx = arr.findIndex((o) => o.id === action.to); if (fromIdx < 0 || toIdx < 0) return st; const [it] = arr.splice(fromIdx, 1); arr.splice(toIdx, 0, it); return { ...st, objects: arr }; }) }; }); return { ...state, mainTabs }; }
+    default: return state;
+  }
+}
+function loadVersions() { try { return JSON.parse(localStorage.getItem(VERSIONS_KEY) || "[]"); } catch (_) { return []; } }
+function saveVersions(arr) { localStorage.setItem(VERSIONS_KEY, JSON.stringify(arr)); }
+function loadAutosave() {
+  // ลอง v3 ก่อน ถ้าไม่มีให้ migrate จาก v2
+  try {
+    const s3 = localStorage.getItem(STORAGE_KEY);
+    if (s3) return JSON.parse(s3);
+    const s2 = localStorage.getItem("mrd-state-v2");
+    if (s2) { const d = JSON.parse(s2); localStorage.setItem(STORAGE_KEY, s2); return d; }
+    return null;
+  } catch (_) { return null; }
+}
+const Ico = ({ children }) => <span className="ico" style={{ fontFamily: "var(--ff-display)", fontWeight: 600, fontSize: 18 }}>{children}</span>;
+function Toast({ msg }) { if (!msg) return null; return <div className="toast">{msg}</div>; }
+function SaveAsDialog({ onSave, onClose, defaultName }) {
+  const [name, setName] = useStateA(defaultName || "");
+  return (<div className="dialog-backdrop" onClick={onClose}>
+    <div className="dialog" onClick={(e) => e.stopPropagation()}>
+      <h3>บันทึกเป็นเวอร์ชันใหม่</h3>
+      <p>ตั้งชื่อเวอร์ชัน เช่น "Monthly Report พ.ค. 69 — ฉบับเสนอผู้บริหาร"</p>
+      <input type="text" autoFocus value={name} onChange={(e) => setName(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && name.trim()) onSave(name.trim()); }} placeholder="ชื่อเวอร์ชัน" />
+      <div className="dialog-actions">
+        <button className="h-btn" onClick={onClose}>ยกเลิก</button>
+        <button className="h-btn primary" disabled={!name.trim()} onClick={() => onSave(name.trim())}>บันทึก</button>
+      </div>
+    </div>
+  </div>);
+}
+function VersionsDialog({ versions, onLoad, onDelete, onClose }) {
+  return (<div className="dialog-backdrop" onClick={onClose}>
+    <div className="dialog" onClick={(e) => e.stopPropagation()}>
+      <h3>โหลดเวอร์ชัน</h3>
+      <p>เลือกเวอร์ชันที่บันทึกไว้ในเครื่อง</p>
+      {versions.length === 0 ? (<div style={{ padding: "30px 0", textAlign: "center", color: "var(--ink-soft)" }}>ยังไม่มีเวอร์ชันที่บันทึกไว้</div>) : (<div className="version-list">
+        {versions.map((v) => (<div key={v.id} className="version-item" onClick={() => onLoad(v)}>
+          <span className="vi-name">{v.name}</span>
+          <span className="vi-when">{new Date(v.ts).toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" })}</span>
+          <button className="vi-del" onClick={(e) => { e.stopPropagation(); if (confirm("ลบเวอร์ชันนี้?")) onDelete(v.id); }} title="ลบ">×</button>
+        </div>))}
+      </div>)}
+      <div className="dialog-actions"><button className="h-btn" onClick={onClose}>ปิด</button></div>
+    </div>
+  </div>);
+}
+// ── AuthModal ─────────────────────────────────────────────
+function AuthModal({ onSuccess, onClose }) {
+  const [step, setStep] = useStateA("password");
+  const [pw, setPw] = useStateA("");
+  const [err, setErr] = useStateA("");
+  const submit = () => {
+    if (btoa(pw) === ADMIN_PASSWORD_HASH) { setStep("division"); setErr(""); }
+    else setErr("รหัสผ่านไม่ถูกต้อง");
+  };
+  if (step === "password") return (
+    <div className="dialog-backdrop" onClick={onClose}>
+      <div className="dialog" onClick={(e) => e.stopPropagation()}>
+        <h3>เข้าสู่โหมดแก้ไข</h3>
+        <p>ใส่รหัสผ่านเพื่อปลดล็อก — คุณจะแก้ไขได้เฉพาะกองที่เลือก</p>
+        <input type="password" autoFocus value={pw} onChange={(e) => setPw(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") submit(); }} placeholder="รหัสผ่าน" />
+        {err && <div className="input-error">{err}</div>}
+        <div className="dialog-actions">
+          <button className="h-btn" onClick={onClose}>ยกเลิก</button>
+          <button className="h-btn primary" onClick={submit} disabled={!pw}>ยืนยัน</button>
+        </div>
+      </div>
+    </div>
+  );
+  return (
+    <div className="dialog-backdrop">
+      <div className="dialog auth-wide" onClick={(e) => e.stopPropagation()}>
+        <h3>เลือกกองที่จะแก้ไข</h3>
+        <p>คุณจะแก้ไขได้เฉพาะกองที่เลือก — กองอื่นอยู่ในโหมดดูอย่างเดียว</p>
+        <div className="div-pick-grid">
+          {DIVISIONS.map((div) => (
+            <button key={div.id} className="div-pick-btn" onClick={() => onSuccess(div, pw)}>
+              <span className="dpb-short">{div.short}</span>
+              <span className="dpb-full">{div.full}</span>
+            </button>
+          ))}
+        </div>
+        <div className="dialog-actions">
+          <button className="h-btn" onClick={onClose}>ยกเลิก</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── App ────────────────────────────────────────────────────
+function App() {
+  const [state, dispatch] = useReducer(reducer, undefined, makeInitial);
+  const [activeDivision, setActiveDivision] = useStateA(null);
+  const [authModalOpen, setAuthModalOpen] = useStateA(false);
+  const [present, setPresent] = useStateA(null);
+  const [playlist, setPlaylist] = useStateA([]);
+  const [toast, setToast] = useStateA("");
+  const [saveAsOpen, setSaveAsOpen] = useStateA(false);
+  const [versionsOpen, setVersionsOpen] = useStateA(false);
+  const [versions, setVersions] = useStateA(loadVersions);
+  const [apiLoading, setApiLoading] = useStateA(true);
+  const [syncStatus, setSyncStatus] = useStateA("idle");
+  const rawPasswordRef = React.useRef(null);
+
+  // editable = กอง unlocked + ดูอยู่ที่ tab ของกองนั้น
+  const activeMainTabIdx = state.mainTabs.findIndex((m) => m.id === state.activeMainTab);
+  const editable = activeDivision !== null && activeMainTabIdx === activeDivision.tabIdx;
+
+  useEffectA(() => { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {} }, [state]);
+  useEffectA(() => {
+    const auto = loadAutosave();
+    if (auto && auto.mainTabs && auto.mainTabs.length === state.mainTabs.length) {
+      const compatible = auto.mainTabs.every((mt, i) => mt.short === state.mainTabs[i].short);
+      if (compatible) dispatch({ type: "LOAD_STATE", state: auto });
+    }
+  }, []);
+
+  // Auto-load from GAS on mount
+  useEffectA(() => {
+    const api = window.ApiService;
+    if (!api || !api.isConfigured()) { setApiLoading(false); return; }
+    api.loadAll().then(all => {
+      DIVISIONS.forEach(div => {
+        const d = all[div.id];
+        if (d && d.tab) dispatch({ type: "SET_DIVISION_TAB", tabIdx: div.tabIdx, tab: d.tab });
+      });
+    }).catch(() => {}).finally(() => setApiLoading(false));
+  }, []);
+
+  const showToast = (msg, dur = 2200) => { setToast(msg); setTimeout(() => setToast(""), dur); };
+  window.__showToast = showToast;
+
+  const loadAllFromApi = async () => {
+    try {
+      const all = await window.ApiService.loadAll();
+      let loaded = 0;
+      DIVISIONS.forEach(div => {
+        const d = all[div.id];
+        if (d && d.tab) { dispatch({ type: "SET_DIVISION_TAB", tabIdx: div.tabIdx, tab: d.tab }); loaded++; }
+      });
+      showToast(loaded > 0 ? `โหลดจาก Drive สำเร็จ (${loaded} กอง)` : "ยังไม่มีข้อมูลบันทึก");
+    } catch (err) { showToast("โหลดไม่สำเร็จ: " + (err.message || err)); }
+  };
+
+  // Auth
+  const onAuthSuccess = (div, rawPassword) => {
+    rawPasswordRef.current = rawPassword;
+    setActiveDivision(div);
+    setAuthModalOpen(false);
+    const tab = state.mainTabs[div.tabIdx];
+    if (tab) dispatch({ type: "SET_MAIN_TAB", id: tab.id });
+    showToast(`ปลดล็อก ${div.short} — พร้อมแก้ไข`);
+  };
+  const onToggleEdit = (want) => {
+    if (!want) { setActiveDivision(null); rawPasswordRef.current = null; return; }
+    setAuthModalOpen(true);
+  };
+
+  // Save
+  const onSave = async () => {
+    if (!activeDivision) { showToast("กรุณาปลดล็อกกองก่อนบันทึก"); return; }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const api = window.ApiService;
+    if (!api || !api.isConfigured()) { showToast("บันทึก local แล้ว · ยังไม่ได้ตั้งค่า GAS_URL"); return; }
+    setSyncStatus("saving");
+    try {
+      const tab = state.mainTabs[activeDivision.tabIdx];
+      await api.saveDivision(activeDivision.id, tab, state.meta, rawPasswordRef.current);
+      setSyncStatus("saved");
+      showToast(`บันทึก ${activeDivision.short} สำเร็จ`);
+      setTimeout(() => setSyncStatus("idle"), 3000);
+    } catch (err) {
+      setSyncStatus("error");
+      showToast("บันทึกไม่สำเร็จ: " + (err.message || err));
+      setTimeout(() => setSyncStatus("idle"), 4000);
+    }
+  };
+  const onSaveAs = async (name) => {
+    const arr = loadVersions();
+    arr.unshift({ id: window.__uid("ver"), name, ts: Date.now(), divisionId: activeDivision?.id, state: deepClone(state) });
+    saveVersions(arr); setVersions(arr); setSaveAsOpen(false);
+    const api = window.ApiService;
+    if (api && api.isConfigured() && activeDivision) {
+      try {
+        const tab = state.mainTabs[activeDivision.tabIdx];
+        await api.saveVersion(activeDivision.id, name, tab, state.meta, rawPasswordRef.current);
+        showToast(`บันทึก "${name}" สำเร็จ`);
+      } catch (err) { showToast(`บันทึก local แล้ว · API: ${err.message}`); }
+    } else { showToast(`บันทึก "${name}" local แล้ว`); }
+  };
+
+  const onLoadVersion = (v) => { dispatch({ type: "LOAD_STATE", state: deepClone(v.state) }); setVersionsOpen(false); showToast(`โหลด "${v.name}"`); };
+  const onDeleteVersion = (id) => { const arr = loadVersions().filter((v) => v.id !== id); saveVersions(arr); setVersions(arr); };
+  const onExport = () => {
+    try {
+      const payload = { kind: "monthly-report-export", version: 2, exportedAt: new Date().toISOString(), state, versions: loadVersions() };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a"); const stamp = new Date().toISOString().slice(0, 10);
+      a.href = url; a.download = `MonthlyReport_${stamp}.json`;
+      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+      showToast("Export JSON สำเร็จ");
+    } catch (e) { showToast("Export ไม่สำเร็จ"); }
+  };
+  const onImport = () => {
+    const input = document.createElement("input");
+    input.type = "file"; input.accept = "application/json,.json";
+    input.onchange = (e) => {
+      const f = e.target.files && e.target.files[0]; if (!f) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const data = JSON.parse(ev.target.result);
+          const incomingState = data.state || data;
+          if (!incomingState || !incomingState.mainTabs) { showToast("ไฟล์ไม่ถูกต้อง"); return; }
+          if (!confirm("Import จะทับงานปัจจุบัน — แน่ใจไหม?")) return;
+          dispatch({ type: "LOAD_STATE", state: deepClone(incomingState) });
+          if (Array.isArray(data.versions)) { saveVersions(data.versions); setVersions(data.versions); }
+          showToast("Import สำเร็จ");
+        } catch (err) { showToast("อ่านไฟล์ไม่ได้"); }
+      };
+      reader.readAsText(f);
+    };
+    input.click();
+  };
+
+  const activeMain = state.mainTabs.find((m) => m.id === state.activeMainTab);
+  const activeSubId = state.activeSubByMain[state.activeMainTab];
+  const activeSub = activeMain && activeMain.subTabs.find((s) => s.id === activeSubId);
+
+  return (<>
+    {apiLoading && (
+      <div className="splash-backdrop">
+        <div className="splash-card">
+          <div className="splash-logo">MR</div>
+          <div className="splash-title">กำลังโหลด…</div>
+          <div className="splash-sub">กำลังดึงข้อมูลจาก Google Drive</div>
+        </div>
+      </div>
+    )}
+    <div className="app">
+      <div className="stage">
+        <header className="topbar">
+          <div className="brand">
+            <div className="brand-logo">อสค</div>
+            <div className="brand-meta">
+              <div className="b1">{state.meta.company}</div>
+              <div className="b2">{state.meta.reportTitle}</div>
+            </div>
+          </div>
+          <div className="topbar-spacer" />
+          <div className="status-legend" title="กติกาสีของรายงาน">
+            <span className="sl-item ok"><span className="sl-dot" />ตามแผน / เร็วกว่าแผน</span>
+            <span className="sl-item warn"><span className="sl-dot" />ช้ากว่าแผน</span>
+          </div>
+          <div className="actions">
+            {window.ApiService && window.ApiService.isConfigured()
+              ? <span className={`drive-chip ${syncStatus === "saving" ? "saving" : syncStatus === "error" ? "error" : "connected"}`}>
+                  {syncStatus === "saving" ? "⇋ บันทึก…" : syncStatus === "error" ? "! ไม่สำเร็จ" : "✓ Drive"}
+                </span>
+              : <span className="drive-chip">⇋ Drive (ยังไม่ตั้งค่า)</span>
+            }
+            <button className="btn" onClick={onSave} disabled={!activeDivision} style={!activeDivision ? { opacity: 0.4 } : {}} title="บันทึกกองที่กำลังแก้ไข"><Ico>⌬</Ico>บันทึก</button>
+            {window.ApiService && window.ApiService.isConfigured() && <button className="btn" onClick={loadAllFromApi} title="โหลดข้อมูลล่าสุดจาก Drive ทุกกอง"><Ico>↺</Ico>โหลดจาก Drive</button>}
+            <button className="btn" onClick={() => setSaveAsOpen(true)} disabled={!activeDivision} style={!activeDivision ? { opacity: 0.4 } : {}} title="บันทึกเป็นเวอร์ชัน"><Ico>+</Ico>บันทึกเป็น</button>
+            <button className="btn" onClick={() => setVersionsOpen(true)} title="โหลดเวอร์ชัน"><Ico>↺</Ico>เวอร์ชัน</button>
+            <button className="btn" onClick={onExport} title="Export JSON"><Ico>↓</Ico>Export</button>
+            <button className="btn" onClick={onImport} title="Import JSON"><Ico>↑</Ico>Import</button>
+            <button className="btn primary" onClick={() => setPresent("picker")} title="โหมดนำเสนอ">นำเสนอ<span className="arr">▶</span></button>
+            <div className="avatar" title="ผู้บริหาร">ผบ</div>
+          </div>
+        </header>
+        <MainTabs tabs={state.mainTabs} activeId={state.activeMainTab} activeDivision={activeDivision} onSelect={(id) => dispatch({ type: "SET_MAIN_TAB", id })} />
+        {activeMain && <SubTabs subTabs={activeMain.subTabs} activeId={activeSubId} onSelect={(id) => dispatch({ type: "SET_SUB_TAB", id })} dispatch={dispatch} editable={editable} />}
+        <Toolbar dispatch={dispatch} editable={editable} activeDivision={activeDivision} onToggleEdit={onToggleEdit} />
+        {activeSub && <Canvas subTab={activeSub} mainTab={activeMain} editable={editable} dispatch={dispatch} period={state.meta.period} divisionId={activeDivision?.id} />}
+      </div>
+    </div>
+    {present === "picker" && <PresentationPicker state={state} onClose={() => setPresent(null)} onStart={(pl) => { setPlaylist(pl); setPresent("playing"); }} />}
+    {present === "playing" && <PresentationView state={state} playlist={playlist} onClose={() => setPresent(null)} />}
+    {saveAsOpen && <SaveAsDialog defaultName={`${state.meta.reportTitle} ${state.meta.period}${activeDivision ? " — " + activeDivision.short : ""}`} onSave={onSaveAs} onClose={() => setSaveAsOpen(false)} />}
+    {versionsOpen && <VersionsDialog versions={versions} onLoad={onLoadVersion} onDelete={onDeleteVersion} onClose={() => setVersionsOpen(false)} />}
+    {authModalOpen && <AuthModal onSuccess={onAuthSuccess} onClose={() => setAuthModalOpen(false)} />}
+    <Toast msg={toast} />
+  </>);
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
