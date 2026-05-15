@@ -5,13 +5,13 @@
 
 ## ไฟล์ที่ต้องเอาไป
 ```
-Monthly_Report_Single.html   ← ตัวแอปทั้งหมด (single file)
-เปิด Monthly Report.bat      ← launcher (ไว้เป็น backup)
-HANDOFF.md                   ← ไฟล์นี้
+index.html                   ← ตัวแอปทั้งหมด (single file)
+เปิด Monthly Report.bat       ← launcher (ไว้เป็น backup)
+HANDOFF.md                    ← ไฟล์นี้
 ```
 
 ## เปิดใช้งาน
-**ดับเบิลคลิก `Monthly_Report_Single.html` ได้เลย** — ไม่ต้องรัน .bat  
+**ดับเบิลคลิก `index.html` ได้เลย** — ไม่ต้องรัน .bat  
 ข้อมูลโหลดจาก Google Drive อัตโนมัติผ่าน GAS
 
 ---
@@ -96,13 +96,25 @@ Monthly-Report-EPC/
 
 ---
 
-## ถ้าจะทำ GitHub Pages (ต่อที่บ้าน)
-1. สมัคร github.com → New repository (public)
-2. อัพโหลด `Monthly_Report_Single.html` เปลี่ยนชื่อเป็น `index.html`
-3. Settings → Pages → Branch: main → Save
-4. ได้ URL: `https://username.github.io/repo-name`
-5. ไปที่ console.cloud.google.com → OAuth consent screen → Authorized JavaScript origins → เพิ่ม URL นั้น
-6. แชร์ URL ให้ทีม — ทุกคนเข้าได้เลย ไม่ต้องส่งไฟล์
+## Git / GitHub
+```
+Repo (public): https://github.com/zealnesskun-dev/monthly-report-dashboard
+```
+
+**workflow (ทำได้ทุกเครื่องที่มี git):**
+```
+git pull              ← ก่อนเริ่มแก้ ดึงของล่าสุด
+...แก้ไฟล์...
+git add .
+git commit -m "ข้อความ"
+git push              ← ส่งขึ้น GitHub
+```
+
+**เครื่องใหม่:** `git clone https://github.com/zealnesskun-dev/monthly-report-dashboard.git`
+(login ผ่าน browser ครั้งเดียว — Git Credential Manager จัดการให้)
+
+**GitHub Pages:** Settings → Pages → Source: Deploy from a branch → Branch: `main` / `/ (root)` → Save
+→ ได้ URL: `https://zealnesskun-dev.github.io/monthly-report-dashboard/`
 
 ---
 
@@ -146,7 +158,7 @@ function saveVersion(divId, versionName, tab, meta) { const date = new Date().to
 
 ## Key constants ในโค้ด
 ```javascript
-// Monthly_Report_Single.html
+// index.html
 const ADMIN_PASSWORD_HASH = "MTIzNDU2"; // btoa("123456")
 const STORAGE_KEY = "mrd-state-v3";     // localStorage key
 const GAS_URL = "https://script.google.com/macros/s/AKfycbzGUotNNlJiZbwhMGNGPjUXF4a3rEMAa_wWhdycZYFan_Pvw1LUATn1AB2PZ1NT7G9I/exec";
