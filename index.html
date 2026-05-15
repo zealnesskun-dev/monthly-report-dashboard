@@ -890,13 +890,21 @@ window.Chart = Chart;
 const { useRef, useCallback } = React;
 const { useState: useStateI, useEffect: useEffectI } = React;
 
+// แปลง Google Drive uc?id= URL → lh3 CDN format ที่ <img> แสดงได้
+function driveImg(u) {
+  if (u && u.indexOf("drive.google.com") !== -1) {
+    const m = u.match(/[?&]id=([\w-]+)/);
+    if (m) return "https://lh3.googleusercontent.com/d/" + m[1] + "=s1200";
+  }
+  return u;
+}
 function useImageUrl(fileId) {
   const [url, setUrl] = useStateI(null);
   useEffectI(() => {
     if (!fileId) return;
-    if (fileId.startsWith("data:") || fileId.startsWith("blob:") || fileId.startsWith("https://")) { setUrl(fileId); return; }
+    if (fileId.startsWith("data:") || fileId.startsWith("blob:") || fileId.startsWith("https://")) { setUrl(driveImg(fileId)); return; }
   }, [fileId]);
-  if (fileId && (fileId.startsWith("data:") || fileId.startsWith("blob:") || fileId.startsWith("https://"))) return fileId;
+  if (fileId && (fileId.startsWith("data:") || fileId.startsWith("blob:") || fileId.startsWith("https://"))) return driveImg(fileId);
   return url;
 }
 
