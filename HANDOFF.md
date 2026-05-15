@@ -20,7 +20,7 @@ HANDOFF.md                    ← ไฟล์นี้
 
 ### Backend: Google Apps Script (GAS)
 ```
-URL: https://script.google.com/macros/s/AKfycbzGUotNNlJiZbwhMGNGPjUXF4a3rEMAa_wWhdycZYFan_Pvw1LUATn1AB2PZ1NT7G9I/exec
+URL: https://script.google.com/macros/s/AKfycbz_9lXJ_0_C1MCS0pFS90_i5sTwSXubIrAyx25kh0EyvUfUih98OCXxcFOnIl0Hufup/exec
 Deploy: Execute as Me | Anyone can access
 Drive folder: Monthly-Report-EPC/ (ใน Google Drive ของ zealnesskun@gmail.com)
 ```
