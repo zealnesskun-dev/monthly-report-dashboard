@@ -825,6 +825,13 @@ window.ApiService = (() => {
     async saveVersion(divId, versionName, tab, meta, password) {
       return post({ action: "saveVersion", divId, versionName, tab, meta, password });
     },
+    async uploadImage(divId, imageData, password) {
+      const imageId = Date.now().toString(36) + Math.random().toString(36).slice(2);
+      await post({ action: "uploadImage", divId, imageId, imageData, password });
+      const result = await get({ action: "getImageUrl", divId, imageId });
+      if (!result || !result.url) throw new Error("ไม่พบไฟล์หลังอัพโหลด");
+      return result.url;
+    },
   };
 })();
   </script>
@@ -883,15 +890,13 @@ window.Chart = Chart;
 const { useRef, useCallback } = React;
 const { useState: useStateI, useEffect: useEffectI } = React;
 
-// รูปภาพเก็บเป็น dataURL ใน state โดยตรง ไม่ต้อง upload แยก
 function useImageUrl(fileId) {
   const [url, setUrl] = useStateI(null);
   useEffectI(() => {
     if (!fileId) return;
-    // dataURL หรือ blob URL — ใช้ตรงได้เลย
-    if (fileId.startsWith("data:") || fileId.startsWith("blob:")) { setUrl(fileId); return; }
+    if (fileId.startsWith("data:") || fileId.startsWith("blob:") || fileId.startsWith("https://")) { setUrl(fileId); return; }
   }, [fileId]);
-  if (fileId && (fileId.startsWith("data:") || fileId.startsWith("blob:"))) return fileId;
+  if (fileId && (fileId.startsWith("data:") || fileId.startsWith("blob:") || fileId.startsWith("https://"))) return fileId;
   return url;
 }
 
@@ -924,10 +929,20 @@ async function pickAndUploadImage(onChange, data, labelKey = "label", fileIdKey 
       const file = input.files[0]; if (!file) { resolve(); return; }
       try {
         const dataUrl = await compressImage(file);
-        onChange({ [fileIdKey]: dataUrl, [labelKey]: file.name });
-        window.__showToast && window.__showToast("เลือกรูปแล้ว — กด บันทึก เพื่อบันทึกลง Drive ✓");
+        const api = window.ApiService;
+        const divId = window.__editDivId;
+        const password = window.__editPassword;
+        if (api && api.isConfigured() && divId && password) {
+          window.__showToast && window.__showToast("กำลังอัพโหลดรูปขึ้น Drive...");
+          const driveUrl = await api.uploadImage(divId, dataUrl, password);
+          onChange({ [fileIdKey]: driveUrl, [labelKey]: file.name });
+          window.__showToast && window.__showToast("อัพโหลดรูปสำเร็จ ✓");
+        } else {
+          onChange({ [fileIdKey]: dataUrl, [labelKey]: file.name });
+          window.__showToast && window.__showToast("เลือกรูปแล้ว — กด บันทึก เพื่อบันทึกลง Drive ✓");
+        }
       } catch (err) {
-        window.__showToast && window.__showToast("โหลดรูปไม่สำเร็จ: " + (err.message || err));
+        window.__showToast && window.__showToast("อัพโหลดรูปไม่สำเร็จ: " + (err.message || err));
       }
       resolve();
     };
@@ -1068,9 +1083,19 @@ function LandscapeImg({ l, i, editable, landscapes, onChange }) {
       const file = input.files[0]; if (!file) return;
       try {
         const dataUrl = await compressImage(file);
-        const next = landscapes.slice(); next[i] = { ...next[i], fileId: dataUrl, label: file.name };
+        const api = window.ApiService;
+        const divId = window.__editDivId;
+        const password = window.__editPassword;
+        let fileId = dataUrl;
+        if (api && api.isConfigured() && divId && password) {
+          window.__showToast && window.__showToast("กำลังอัพโหลดรูปขึ้น Drive...");
+          fileId = await api.uploadImage(divId, dataUrl, password);
+          window.__showToast && window.__showToast("อัพโหลดรูปสำเร็จ ✓");
+        } else {
+          window.__showToast && window.__showToast("เลือกรูปแล้ว — กด บันทึก เพื่อบันทึกลง Drive ✓");
+        }
+        const next = landscapes.slice(); next[i] = { ...next[i], fileId, label: file.name };
         onChange({ landscapes: next });
-        window.__showToast && window.__showToast("เลือกรูปแล้ว — กด บันทึก เพื่อบันทึกลง Drive ✓");
       } catch (err) {
         window.__showToast && window.__showToast("โหลดรูปไม่สำเร็จ: " + err.message);
       }
@@ -1734,6 +1759,8 @@ function App() {
   // Auth
   const onAuthSuccess = (div, rawPassword) => {
     rawPasswordRef.current = rawPassword;
+    window.__editDivId = div.id;
+    window.__editPassword = rawPassword;
     setActiveDivision(div);
     setAuthModalOpen(false);
     const tab = state.mainTabs[div.tabIdx];
@@ -1741,7 +1768,7 @@ function App() {
     showToast(`ปลดล็อก ${div.short} — พร้อมแก้ไข`);
   };
   const onToggleEdit = (want) => {
-    if (!want) { setActiveDivision(null); rawPasswordRef.current = null; return; }
+    if (!want) { setActiveDivision(null); rawPasswordRef.current = null; window.__editDivId = null; window.__editPassword = null; return; }
     setAuthModalOpen(true);
   };
 
