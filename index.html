@@ -1368,6 +1368,8 @@ function ChartPA({ data, onChange, editable }) {
             <EditableNum className="cpa-ref-val" value={target6m} onChange={(v) => onChange({ target6m: v })} editable={true} />
             <span style={{ color: "#c8332b", fontWeight: 700, marginLeft: 16 }}>เป้าสิ้นปี (ใช้คำนวณเส้นแผน):</span>
             <EditableNum className="cpa-ref-val" value={targetYear} onChange={(v) => onChange({ targetYear: v })} editable={true} />
+            <span style={{ color: "#6b5fa3", fontWeight: 700, marginLeft: 16 }}>Max Y (0 = อัตโนมัติ):</span>
+            <EditableNum className="cpa-ref-val" value={maxY || 0} onChange={(v) => onChange({ maxY: v > 0 ? v : null })} editable={true} />
           </div>
           <div className="cpa-grid">
             {months.map((m, i) => (
@@ -1921,6 +1923,29 @@ function App() {
     setAuthModalOpen(true);
   };
 
+  // Push seed data (window.__seedData) ขึ้น Drive ทั้ง 5 กอง
+  // ใช้เมื่อ: แก้ seed data ใน index.html แล้ว Drive เก่าทับ
+  const onPushSeedToDrive = async () => {
+    if (!activeDivision) { showToast("กรุณาปลดล็อกก่อน"); return; }
+    if (!confirm("Push seed data ทั้ง 5 กอง ขึ้น Drive ทับข้อมูลเดิม — ยืนยัน?")) return;
+    const api = window.ApiService;
+    if (!api || !api.isConfigured()) { showToast("ยังไม่ได้ตั้งค่า GAS_URL"); return; }
+    setSyncStatus("saving");
+    try {
+      const seed = window.__seedData;
+      await Promise.all(DIVISIONS.map(div =>
+        api.saveDivision(div.id, seed.mainTabs[div.tabIdx], seed.meta, rawPasswordRef.current)
+      ));
+      setSyncStatus("saved");
+      showToast("Push seed → Drive สำเร็จ ทั้ง 5 กอง");
+      setTimeout(() => setSyncStatus("idle"), 3000);
+    } catch (err) {
+      setSyncStatus("error");
+      showToast("Push ไม่สำเร็จ: " + (err.message || err));
+      setTimeout(() => setSyncStatus("idle"), 4000);
+    }
+  };
+
   // Save
   const onSave = async () => {
     if (!activeDivision) { showToast("กรุณาปลดล็อกกองก่อนบันทึก"); return; }
@@ -2026,6 +2051,7 @@ function App() {
               : <span className="drive-chip">⇋ Drive (ยังไม่ตั้งค่า)</span>
             }
             <button className="btn" onClick={onSave} disabled={!activeDivision} style={!activeDivision ? { opacity: 0.4 } : {}} title="บันทึกกองที่กำลังแก้ไข"><Ico>⌬</Ico>บันทึก</button>
+            {activeDivision && window.ApiService && window.ApiService.isConfigured() && new URLSearchParams(location.search).has('dev') && <button className="btn" onClick={onPushSeedToDrive} title="Push seed data ทั้ง 5 กองจาก index.html ขึ้น Drive (ใช้หลังแก้ seed data)"><Ico>⬆</Ico>Push Seed</button>}
             {window.ApiService && window.ApiService.isConfigured() && <button className="btn" onClick={loadAllFromApi} title="โหลดข้อมูลล่าสุดจาก Drive ทุกกอง"><Ico>↺</Ico>โหลดจาก Drive</button>}
             <button className="btn" onClick={() => setSaveAsOpen(true)} disabled={!activeDivision} style={!activeDivision ? { opacity: 0.4 } : {}} title="บันทึกเป็นเวอร์ชัน"><Ico>+</Ico>บันทึกเป็น</button>
             <button className="btn" onClick={() => setVersionsOpen(true)} title="โหลดเวอร์ชัน"><Ico>↺</Ico>เวอร์ชัน</button>
