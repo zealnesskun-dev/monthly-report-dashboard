@@ -469,12 +469,22 @@ input, textarea { font: inherit; color: inherit; }
 .main-tab.locked { opacity: 0.42; }
 .input-error { color: var(--warn); font-size: 13px; font-weight: 600; margin: -10px 0 14px; }
 
-/* ── Loading splash ─────────────────────────────────────── */
-.splash-backdrop { position: fixed; inset: 0; background: rgba(20,25,42,0.6); backdrop-filter: blur(6px); z-index: 2000; display: grid; place-items: center; }
-.splash-card { background: var(--paper); border-radius: var(--r-xl); padding: 52px 56px; width: 480px; max-width: 92vw; text-align: center; box-shadow: 0 32px 80px rgba(20,25,42,0.22); }
-.splash-logo { width: 72px; height: 72px; border-radius: 22px; background: var(--ink); color: var(--paper); display: grid; place-items: center; font-family: var(--ff-display); font-weight: 800; font-size: 22px; margin: 0 auto 24px; }
-.splash-title { font-family: var(--ff-display); font-size: 26px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
-.splash-sub { font-size: 14px; color: var(--ink-soft); margin-bottom: 8px; line-height: 1.6; }
+/* ── Loading skeleton ─────────────────────────────────────── */
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.sk-pulse { background: linear-gradient(90deg, #ece5d5 25%, #f5f0e8 50%, #ece5d5 75%); background-size: 200% 100%; animation: shimmer 1.6s ease-in-out infinite; border-radius: 10px; }
+.splash-backdrop { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: flex; flex-direction: column; padding: 28px; overflow: hidden; opacity: 1; transition: opacity 0.35s ease; }
+.splash-backdrop.fading { opacity: 0; pointer-events: none; }
+.sk-stage { background: var(--paper); border-radius: var(--r-xl); flex: 1; overflow: hidden; box-shadow: 0 1px 0 rgba(20,25,42,0.03), 0 24px 60px rgba(20,25,42,0.06); }
+.sk-topbar { display: flex; align-items: center; gap: 14px; padding: 28px 40px 24px; }
+.sk-logo { width: 56px; height: 56px; border-radius: 18px; flex-shrink: 0; }
+.sk-brand { display: flex; flex-direction: column; gap: 8px; }
+.sk-brand-l1 { width: 180px; height: 18px; }
+.sk-brand-l2 { width: 110px; height: 12px; }
+.sk-tabs { display: flex; gap: 8px; margin: 0 40px 20px; }
+.sk-tab { height: 44px; border-radius: 999px; }
+.sk-cards { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; padding: 0 40px; }
+.sk-card { border-radius: 20px; }
+.sk-msg-wrap { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--paper); border-radius: 999px; padding: 16px 36px; box-shadow: 0 8px 32px rgba(20,25,42,0.14); font-family: var(--ff-body); font-size: 22px; font-weight: 600; color: var(--ink-2); white-space: nowrap; letter-spacing: 0.01em; }
   </style>
 
   <!-- React 18 -->
@@ -1852,6 +1862,16 @@ function AuthModal({ onSuccess, onClose }) {
   );
 }
 
+const LOAD_MSGS = [
+  "☕  ชงกาแฟแปปนึง...",
+  "📋  รวบรวมรายงานอยู่นะ...",
+  "🗂️  จัดเรียงข้อมูลให้เรียบร้อย...",
+  "🖨️  เตรียมรายงานให้พร้อมพิมพ์...",
+  "🌱  นับ carbon อยู่แปปนึง...",
+  "📡  รอ server ตอบกลับ...",
+  "✅  เกือบเสร็จแล้ว...",
+];
+
 // ── App ────────────────────────────────────────────────────
 function App() {
   const [state, dispatch] = useReducer(reducer, undefined, makeInitial);
@@ -1864,6 +1884,8 @@ function App() {
   const [versionsOpen, setVersionsOpen] = useStateA(false);
   const [versions, setVersions] = useStateA(loadVersions);
   const [apiLoading, setApiLoading] = useStateA(true);
+  const [loadMsg, setLoadMsg] = useStateA(0);
+  const [loadFade, setLoadFade] = useStateA(false);
   const [syncStatus, setSyncStatus] = useStateA("idle");
   const rawPasswordRef = React.useRef(null);
 
@@ -1889,8 +1911,14 @@ function App() {
         const d = all[div.id];
         if (d && d.tab) dispatch({ type: "SET_DIVISION_TAB", tabIdx: div.tabIdx, tab: d.tab });
       });
-    }).catch(() => {}).finally(() => setApiLoading(false));
+    }).catch(() => {}).finally(() => { setLoadFade(true); setTimeout(() => setApiLoading(false), 350); });
   }, []);
+
+  useEffectA(() => {
+    if (!apiLoading) return;
+    const t = setInterval(() => setLoadMsg(m => (m + 1) % LOAD_MSGS.length), 2000);
+    return () => clearInterval(t);
+  }, [apiLoading]);
 
   const showToast = (msg, dur = 2200) => { setToast(msg); setTimeout(() => setToast(""), dur); };
   window.__showToast = showToast;
@@ -2020,12 +2048,30 @@ function App() {
 
   return (<>
     {apiLoading && (
-      <div className="splash-backdrop">
-        <div className="splash-card">
-          <div className="splash-logo">MR</div>
-          <div className="splash-title">กำลังโหลด…</div>
-          <div className="splash-sub">กำลังดึงข้อมูลจาก Google Drive</div>
+      <div className={`splash-backdrop${loadFade ? " fading" : ""}`}>
+        <div className="sk-stage">
+          <div className="sk-topbar">
+            <div className="sk-pulse sk-logo" />
+            <div className="sk-brand">
+              <div className="sk-pulse sk-brand-l1" />
+              <div className="sk-pulse sk-brand-l2" />
+            </div>
+            <div style={{flex:1}} />
+            <div className="sk-pulse" style={{width:110,height:36,borderRadius:999}} />
+            <div className="sk-pulse" style={{width:80,height:36,borderRadius:999,marginLeft:8}} />
+          </div>
+          <div className="sk-tabs">
+            {[140,120,130,110,125].map((w,i) => (
+              <div key={i} className="sk-pulse sk-tab" style={{width:w}} />
+            ))}
+          </div>
+          <div className="sk-cards">
+            {[[3,110],[3,110],[3,110],[3,110],[6,140],[6,140],[12,96],[4,120],[4,120],[4,120]].map(([span,h],i) => (
+              <div key={i} className="sk-pulse sk-card" style={{gridColumn:`span ${span}`,height:h}} />
+            ))}
+          </div>
         </div>
+        <div className="sk-msg-wrap">{LOAD_MSGS[loadMsg]}</div>
       </div>
     )}
     <div className="app">
